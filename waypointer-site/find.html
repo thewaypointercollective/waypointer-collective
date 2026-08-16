@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Find — The Waypointer Collective</title>
+  <meta name="description" content="Browse Kingdom-minded businesses by location, category, and more. Every listing is vetted." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="/">
+        <img src="/images/logo.png" alt="The Waypointer Collective" onerror="this.style.display='none'" />
+        <div class="nav-logo-text">THE WAYPOINTER<span>COLLECTIVE</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/find">Find</a></li>
+        <li><a href="/waypointers">Waypointers</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/faq">FAQ</a></li>
+      </ul>
+      <a class="btn btn-primary nav-cta" href="/apply">Join the Collective</a>
+      <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/find">Find</a>
+    <a href="/waypointers">Waypointers</a>
+    <a href="/about">About</a>
+    <a href="/faq">FAQ</a>
+    <a href="/apply">Join the Collective →</a>
+  </div>
+
+  <!-- HERO -->
+  <div class="find-hero">
+    <div class="gold-bar"></div>
+    <div class="section-label">The Collective</div>
+    <h1>Find a business.</h1>
+    <p>Every listing is vetted. Every business is advancing the Kingdom.</p>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-bar">
+    <div class="filters-inner">
+      <div class="search-row">
+        <input
+          class="search-input"
+          id="searchInput"
+          type="search"
+          placeholder="Search by name, city, or category…"
+          autocomplete="off"
+        />
+      </div>
+
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <span class="filter-label">Category</span>
+        <div class="filter-pills" id="categoryPills">
+          <!-- Built by directory.js -->
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <span class="filter-label">Filter</span>
+        <div class="filter-pills" id="tagPills">
+          <!-- Built by directory.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="find-results">
+    <div class="results-count" id="resultsCount">Loading…</div>
+    <div class="biz-grid" id="directoryGrid">
+      <!-- Populated by directory.js -->
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="/images/logo.png" alt="The Waypointer Collective" onerror="this.style.display='none'" />
+        <div class="footer-tagline">Your spending. His Kingdom.</div>
+      </div>
+      <nav class="footer-nav">
+        <a href="/find">Find</a>
+        <a href="/waypointers">Waypointers</a>
+        <a href="/about">About</a>
+        <a href="/apply">Join the Collective</a>
+        <a href="/faq">FAQ</a>
+        <a href="mailto:hello@thewaypointercollective.com">hello@thewaypointercollective.com</a>
+      </nav>
+      <div class="footer-divider"></div>
+      <div class="footer-copy">© The Waypointer Collective LLC · thewaypointercollective.com</div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/directory.js"></script>
+
+</body>
+</html>
