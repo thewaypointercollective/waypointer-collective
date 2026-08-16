@@ -1,0 +1,57 @@
+{
+  "businesses": [
+    {
+      "id": "jesusismyreligion",
+      "name": "JesusIsMyReligion",
+      "city": "San Diego",
+      "state": "CA",
+      "category": "Apparel & Accessories",
+      "tags": ["Ships Anywhere", "B2C"],
+      "website": "https://jesusismyreligion.com",
+      "description": "Faith-forward clothing brand that donates 10% of every sale to Bible translation worldwide. Wear your faith. Fund the Word.",
+      "logoInitials": "JR",
+      "logoColor": "#E8A020",
+      "instagram": "https://instagram.com/jesusismyreligion",
+      "featured": true
+    },
+    {
+      "id": "harvest-consulting",
+      "name": "Harvest Consulting",
+      "city": "San Diego",
+      "state": "CA",
+      "category": "Professional Services",
+      "tags": ["Local", "B2B"],
+      "website": "https://harvestconsulting.com",
+      "description": "Business consulting firm that donates 15% of revenue to church planting in unreached communities around the world.",
+      "logoInitials": "HC",
+      "logoColor": "#1B617A",
+      "featured": true
+    },
+    {
+      "id": "redeemed-grounds",
+      "name": "Redeemed Grounds",
+      "city": "Escondido",
+      "state": "CA",
+      "category": "Food & Beverage",
+      "tags": ["Local", "Ships Anywhere", "B2C"],
+      "website": "https://redeemedgrounds.com",
+      "description": "Coffee roastery that hosts weekly evangelism training and funds missions through every bag sold.",
+      "logoInitials": "RG",
+      "logoColor": "#2d7a5f",
+      "featured": true
+    },
+    {
+      "id": "lighthouse-study",
+      "name": "Lighthouse Study Co.",
+      "city": "Online",
+      "state": "",
+      "category": "Education & Tutoring",
+      "tags": ["Online", "B2C"],
+      "website": "https://lighthousestudy.com",
+      "description": "Academic tutoring that integrates Biblical worldview and sponsors underprivileged students to learn in a Christ-centered environment.",
+      "logoInitials": "LS",
+      "logoColor": "#4a5568",
+      "featured": true
+    }
+  ]
+}
