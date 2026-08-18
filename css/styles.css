@@ -1141,6 +1141,157 @@ footer {
 }
 
 /* ============================================
+   Business Modal
+   ============================================ */
+.biz-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.biz-modal.open {
+  display: flex;
+}
+
+.biz-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 45, 64, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.biz-modal-content {
+  position: relative;
+  background: white;
+  border-radius: var(--radius);
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 36px;
+  z-index: 1;
+  animation: modalIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.biz-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--off-white);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.biz-modal-close:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.modal-logo-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.modal-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 22px;
+  color: white;
+  overflow: hidden;
+}
+
+.modal-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8px;
+}
+
+.modal-biz-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.modal-biz-name {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--text);
+  margin: 8px 0 4px;
+}
+
+.modal-biz-location {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.modal-description {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+
+.modal-socials {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.modal-socials a {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--teal);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.modal-socials a:hover {
+  color: var(--teal-dark);
+}
+
+.modal-cta {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Cursor on cards */
+.biz-card {
+  cursor: pointer;
+}
+
+/* ============================================
    Page transition (fade in)
    ============================================ */
 body {
