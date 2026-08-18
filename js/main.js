@@ -133,7 +133,7 @@ function renderBizCard(biz) {
     : biz.logoInitials || '';
 
   return `
-    <div class="biz-card" data-biz-id="${biz.id}" role="button" tabindex="0" data-aos="fade-up">
+    <div class="biz-card biz-card-animate" data-biz-id="${biz.id}" role="button" tabindex="0">
       <div class="biz-logo" style="background:${biz.logoColor || '#1B617A'}">${logoHtml}</div>
       <div class="biz-info">
         <div class="tags">${tagHtml}</div>
