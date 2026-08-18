@@ -43,26 +43,7 @@ function applyFilters() {
     return;
   }
 
-  grid.innerHTML = filtered.map(biz => {
-    const location = biz.state ? `${biz.city}, ${biz.state}` : biz.city;
-    const tagHtml = [biz.category, ...biz.tags].map((t, i) =>
-      `<span class="tag${i > 0 ? ' tag-gold' : ''}">${t}</span>`
-    ).join('');
-    const logoHtml = biz.logo
-      ? `<img src="${biz.logo}" alt="${biz.name}" />`
-      : biz.logoInitials || '';
-
-    return `
-      <a class="biz-card" href="${biz.website}" target="_blank" rel="noopener noreferrer">
-        <div class="biz-logo" style="background:${biz.logoColor || '#1B617A'}">${logoHtml}</div>
-        <div class="biz-info">
-          <div class="tags">${tagHtml}</div>
-          <div class="biz-name">${biz.name}</div>
-          <div class="biz-location">📍 ${location}</div>
-          <div class="biz-description">${biz.description}</div>
-        </div>
-      </a>`;
-  }).join('');
+  grid.innerHTML = filtered.map(biz => renderBizCard(biz)).join('');
 }
 
 /* --- Set up category pills --- */
@@ -139,6 +120,7 @@ async function initDirectory() {
     const res  = await fetch('/data/businesses.json');
     const data = await res.json();
     allBusinesses = data.businesses;
+    window._waypointerBusinesses = data.businesses;
 
     buildCategoryPills(allBusinesses);
     buildTagPills();
