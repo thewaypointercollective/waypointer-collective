@@ -1291,6 +1291,16 @@ footer {
   cursor: pointer;
 }
 
+/* Card entrance animation (replaces data-aos on dynamic cards) */
+.biz-card-animate {
+  animation: cardFadeUp 0.5s ease forwards;
+}
+
+@keyframes cardFadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ============================================
    Page transition (fade in)
    ============================================ */
