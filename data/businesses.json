@@ -16,5 +16,23 @@
       "tiktok": "https://tiktok.com/@jesusismyreligion",
       "featured": true
     }
+  ,
+    {
+      "id": "logoconnection",
+      "name": "Logo Connection",
+      "city": "San Diego",
+      "state": "CA",
+      "category": "Apparel & Accessories",
+      "tags": ["B2B"],
+      "website": "https://www.logocxn.com",
+      "description": "Logo Connection is a single source for silkscreen, embroidery, print, signage and promotional products, all held to the same quality and standard so that your company or brand always looks consistently great. We focus on the little details to ensure every order is done to spec and on schedule. We forward the Gospel by partnering with selected non-profit organizations and Christ-based companies to make Jesus known.",
+      "logo": "/images/New_logo_Services.jpg",
+      "logoInitials": "LC",
+      "logoColor": "#1A2D40",
+      "instagram": "https://www.instagram.com/logocxn/",
+      "facebook": "https://www.facebook.com/LogoCXN/",
+      "x": "https://twitter.com/LogoConnection",
+      "featured": true
+    }
   ]
 }
