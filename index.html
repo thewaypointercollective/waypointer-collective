@@ -29,8 +29,141 @@
 
   <!-- Favicon placeholder -->
   <link rel="icon" type="image/png" href="/images/logo.png" />
+
+  <style>
+    /* ── Welcome Popup ── */
+    #twc-popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 35, 0.72);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    #twc-popup-overlay.visible {
+      display: flex;
+      opacity: 1;
+    }
+    #twc-popup {
+      background: #fff;
+      border-radius: 12px;
+      max-width: 520px;
+      width: 100%;
+      padding: 40px 36px 32px;
+      position: relative;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.28);
+      transform: translateY(16px);
+      transition: transform 0.35s ease;
+    }
+    #twc-popup-overlay.visible #twc-popup {
+      transform: translateY(0);
+    }
+    #twc-popup .popup-gold-bar {
+      width: 48px;
+      height: 3px;
+      background: var(--gold, #C9922A);
+      border-radius: 2px;
+      margin-bottom: 18px;
+    }
+    #twc-popup h2 {
+      font-family: var(--font-heading, 'Montserrat', sans-serif);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy, #1A2D40);
+      margin: 0 0 16px;
+      line-height: 1.25;
+    }
+    #twc-popup p {
+      font-family: var(--font-body, 'Inter', sans-serif);
+      font-size: 15px;
+      line-height: 1.7;
+      color: #444;
+      margin: 0 0 14px;
+    }
+    #twc-popup .popup-divider {
+      border: none;
+      border-top: 1px solid #e8e8e8;
+      margin: 20px 0;
+    }
+    #twc-popup .popup-label {
+      font-family: var(--font-heading, 'Montserrat', sans-serif);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal, #1B617A);
+      margin-bottom: 10px;
+    }
+    #twc-popup .popup-btns {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    #twc-popup .popup-btns a {
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-family: var(--font-heading, 'Montserrat', sans-serif);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+    #twc-popup .popup-btn-primary {
+      background: var(--teal, #1B617A);
+      color: #fff;
+    }
+    #twc-popup .popup-btn-secondary {
+      background: transparent;
+      color: var(--teal, #1B617A);
+      border: 2px solid var(--teal, #1B617A);
+    }
+    #twc-popup-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: #aaa;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+    }
+    #twc-popup-close:hover { color: #555; }
+    @media (max-width: 480px) {
+      #twc-popup { padding: 32px 24px 28px; }
+      #twc-popup .popup-btns { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- ========================
+       WELCOME POPUP
+       ======================== -->
+  <div id="twc-popup-overlay" role="dialog" aria-modal="true" aria-labelledby="twc-popup-title">
+    <div id="twc-popup">
+      <button id="twc-popup-close" aria-label="Close">&times;</button>
+      <div class="popup-gold-bar"></div>
+      <h2 id="twc-popup-title">Welcome to The Waypointer Collective</h2>
+      <p>If you're here to find businesses that are actively forwarding the Gospel, then you're in the right place. Every company in our directory has been personally vetted. Browse, discover, and let your spending make a difference.</p>
+      <hr class="popup-divider" />
+      <div class="popup-label">Are you a business owner?</div>
+      <p>We're in our founding season, which means businesses that join now become <strong>Founding Members</strong> — listed for free, permanently. After we reach critical mass, membership fees begin. Founding Members are locked in for life.</p>
+      <div class="popup-btns">
+        <a class="popup-btn-primary" href="/find" id="twc-popup-find">Find a Business</a>
+        <a class="popup-btn-secondary" href="/apply" id="twc-popup-apply">Apply to Join</a>
+      </div>
+    </div>
+  </div>
 
   <!-- ========================
        NAVIGATION
@@ -313,6 +446,48 @@
 
   <!-- Main JS -->
   <script src="/js/main.js"></script>
+
+  <!-- Welcome Popup -->
+  <script>
+    (function () {
+      var STORAGE_KEY = 'twc_popup_dismissed';
+      var ONE_WEEK = 7 * 24 * 60 * 60 * 1000;
+
+      function shouldShow() {
+        try {
+          var ts = localStorage.getItem(STORAGE_KEY);
+          if (!ts) return true;
+          return (Date.now() - parseInt(ts, 10)) > ONE_WEEK;
+        } catch (e) { return true; }
+      }
+
+      function dismiss() {
+        try { localStorage.setItem(STORAGE_KEY, Date.now().toString()); } catch (e) {}
+        var overlay = document.getElementById('twc-popup-overlay');
+        overlay.style.opacity = '0';
+        setTimeout(function () { overlay.style.display = 'none'; }, 350);
+      }
+
+      if (shouldShow()) {
+        setTimeout(function () {
+          var overlay = document.getElementById('twc-popup-overlay');
+          overlay.style.display = 'flex';
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              overlay.classList.add('visible');
+            });
+          });
+
+          document.getElementById('twc-popup-close').addEventListener('click', dismiss);
+          overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) dismiss();
+          });
+          document.getElementById('twc-popup-find').addEventListener('click', dismiss);
+          document.getElementById('twc-popup-apply').addEventListener('click', dismiss);
+        }, 1500);
+      }
+    })();
+  </script>
 
 </body>
 </html>
