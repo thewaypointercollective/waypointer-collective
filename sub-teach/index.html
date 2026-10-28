@@ -1,1 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sub-Teach | The Rock Academy</title>
+  <style>
+    :root {
+      --purple: #542D80;
+      --purple-light: #7B4FAF;
+      --purple-dark: #3A1F5C;
+      --gold: #FDB924;
+      --gold-dark: #D9991A;
+      --light-gray: #E6E7E8;
+      --charcoal: #6D6E71;
+      --white: #FFFFFF;
+    }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--light-gray);
+      color: var(--charcoal);
+      min-height: 100vh;
+    }
+
+    /* ── PASSWORD GATE ── */
+    #gate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--purple-dark);
+    }
+    .gate-box {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 48px 40px;
+      width: 340px;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    }
+    .gate-logo {
+      width: 80px;
+      height: 80px;
+      background: var(--purple);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      color: var(--gold);
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+    .gate-box h1 {
+      color: var(--purple);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .gate-box p {
+      color: var(--charcoal);
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+    .gate-box input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--light-gray);
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 12px;
+    }
+    .gate-box input:focus { border-color: var(--purple); }
+    .gate-box button {
+      width: 100%;
+      padding: 12px;
+      background: var(--purple);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .gate-box button:hover { background: var(--purple-light); }
+    .gate-error {
+      color: #c0392b;
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* ── APP SHELL ── */
+    #app { display: none; }
+
+    header {
+      background: var(--purple);
+      color: var(--white);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-logo {
+      width: 36px;
+      height: 36px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--purple);
+      font-weight: 900;
+      font-size: 14px;
+    }
+    .header-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .header-title span {
+      color: var(--gold);
+    }
+    nav {
+      display: flex;
+      gap: 4px;
+    }
+    nav button {
+      background: transparent;
+      border: 2px solid transparent;
+      color: rgba(255,255,255,0.75);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    nav button.active {
+      background: var(--gold);
+      color: var(--purple);
+      border-color: var(--gold);
+    }
+    nav button:hover:not(.active) {
+      border-color: rgba(255,255,255,0.4);
+      color: var(--white);
+    }
+
+    .view { display: none; padding: 24px; max-width: 960px; margin: 0 auto; }
+    .view.active { display: block; }
+
+    /* ── DAY HEADER BANNER ── */
+    .day-banner {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .day-left h2 {
+      font-size: 22px;
+      color: var(--purple);
+      font-weight: 700;
+    }
+    .day-left p {
+      font-size: 13px;
+      color: var(--charcoal);
+      margin-top: 2px;
+    }
+    .day-badge {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .day-badge.odd { background: var(--purple); color: var(--gold); }
+    .day-badge.even { background: var(--gold); color: var(--purple); }
+    .day-badge.no-school { background: var(--light-gray); color: var(--charcoal); font-size: 13px; }
+
+    /* ── CLASS SELECTOR ── */
+    .class-selector {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .class-selector label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--purple);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .class-selector select {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid var(--light-gray);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--charcoal);
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .class-selector select:focus { border-color: var(--purple); }
+
+    /* ── LESSON CARDS ── */
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 680px) {
+      .lesson-grid { grid-template-columns: 1fr; }
+    }
+    .lesson-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      position: relative;
+    }
+    .lesson-card.today {
+      border: 2px solid var(--purple);
+      box-shadow: 0 4px 20px rgba(84,45,128,0.15);
+    }
+    .lesson-card.today::before {
+      content: 'TODAY';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--purple);
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+    .card-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      margin-bottom: 8px;
+      opacity: 0.6;
+    }
+    .card-date {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--purple);
+      margin-bottom: 12px;
+    }
+    .card-lesson-num {
+      font-size: 11px;
+      color: var(--charcoal);
+      margin-bottom: 4px;
+      opacity: 0.7;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--purple-dark);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .card-topics {
+      font-size: 12px;
+      color: var(--charcoal);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .card-hw {
+      background: var(--light-gray);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: var(--charcoal);
+    }
+    .card-hw strong {
+      color: var(--purple);
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+    .card-quiz {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--purple);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    /* ── COMPLETE + NOTES ── */
+    .actions-row {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .actions-row h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--purple);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    .complete-btn {
+      background: var(--purple);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 16px;
+    }
+    .complete-btn:hover { background: var(--purple-light); }
+    .complete-btn.done {
+      background: #2ecc71;
+      color: var(--white);
+    }
+    .notes-area {
+      width: 100%;
+      min-height: 90px;
+      padding: 10px 14px;
+      border: 2px solid var(--light-gray);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--charcoal);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .notes-area:focus { border-color: var(--purple); }
+    .notes-saved {
+      font-size: 11px;
+      color: #2ecc71;
+      margin-top: 6px;
+      display: none;
+    }
+
+    /* ── CALENDAR VIEW ── */
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .cal-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--purple);
+    }
+    .cal-nav button {
+      background: var(--white);
+      border: 2px solid var(--light-gray);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--purple);
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .cal-nav button:hover {
+      border-color: var(--purple);
+      background: var(--purple);
+      color: var(--white);
+    }
+    .cal-grid {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: var(--purple);
+    }
+    .cal-weekdays span {
+      text-align: center;
+      padding: 10px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.8);
+      text-transform: uppercase;
+    }
+    .cal-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-left: 1px solid var(--light-gray);
+      border-top: 1px solid var(--light-gray);
+    }
+    .cal-day {
+      border-right: 1px solid var(--light-gray);
+      border-bottom: 1px solid var(--light-gray);
+      min-height: 72px;
+      padding: 8px;
+      font-size: 13px;
+      position: relative;
+    }
+    .cal-day.empty { background: #f9f9f9; }
+    .cal-day.today-cell { background: #f5f0ff; }
+    .cal-day-num {
+      font-weight: 700;
+      color: var(--charcoal);
+      font-size: 13px;
+    }
+    .cal-day.today-cell .cal-day-num {
+      background: var(--purple);
+      color: var(--white);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    .cal-type {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-top: 4px;
+    }
+    .cal-type.odd { background: var(--purple); color: var(--gold); }
+    .cal-type.even { background: var(--gold); color: var(--purple); }
+    .cal-type.no-school { background: var(--light-gray); color: var(--charcoal); }
+    .cal-type.exam { background: #e74c3c; color: var(--white); }
+    .cal-type.camp { background: #27ae60; color: var(--white); }
+    .cal-type.half { background: #f39c12; color: var(--white); }
+    .cal-event {
+      display: block;
+      font-size: 10px;
+      color: #e74c3c;
+      font-weight: 700;
+      margin-top: 3px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .cal-note {
+      display: block;
+      font-size: 10px;
+      color: var(--charcoal);
+      margin-top: 2px;
+      opacity: 0.7;
+      font-style: italic;
+    }
+
+    /* ── POPUP ── */
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .popup-overlay.open { display: flex; }
+    .popup {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 28px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+    }
+    .popup h3 {
+      color: var(--purple);
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+    .popup-date {
+      font-size: 12px;
+      color: var(--charcoal);
+      margin-bottom: 16px;
+    }
+    .popup-classes {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .popup-class {
+      background: var(--light-gray);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+    .popup-class strong {
+      display: block;
+      color: var(--purple);
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+    .popup-class span {
+      font-size: 12px;
+      color: var(--charcoal);
+    }
+    .popup-close {
+      background: var(--purple);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+    }
+    .popup-close:hover { background: var(--purple-light); }
+
+    /* ── LEGEND ── */
+    .legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--charcoal);
+    }
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="gate-logo">TRA</div>
+    <h1>Sub-Teach Portal</h1>
+    <p>The Rock Academy — Benjamin Gilmore</p>
+    <input type="password" id="pw-input" placeholder="Enter password" />
+    <button onclick="checkPw()">Enter</button>
+    <div class="gate-error" id="pw-error">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <header>
+    <div class="header-brand">
+      <div class="header-logo">TRA</div>
+      <span class="header-title">Sub-Teach &nbsp;|&nbsp; <span>The Rock Academy</span></span>
+    </div>
+    <nav>
+      <button class="active" onclick="showView('dashboard')">Dashboard</button>
+      <button onclick="showView('calendar')">Calendar</button>
+    </nav>
+  </header>
+
+  <!-- DASHBOARD VIEW -->
+  <div class="view active" id="view-dashboard">
+    <div class="day-banner">
+      <div class="day-left">
+        <h2 id="banner-date">—</h2>
+        <p id="banner-weekday">—</p>
+      </div>
+      <div class="day-badge" id="day-badge">—</div>
+    </div>
+
+    <div class="class-selector">
+      <label>Class</label>
+      <select id="class-select" onchange="renderDashboard()">
+        <option value="precalc-p4">Pre-Calculus — Period 4 (Even)</option>
+        <option value="geometry-p6">Geometry — Period 6 (Even)</option>
+        <option value="precalc-p1">Pre-Calculus — Period 1 (Odd)</option>
+        <option value="apcalc-p3">AP Calculus — Period 3 (Odd)</option>
+        <option value="geometry-p5">Geometry — Period 5 (Odd)</option>
+      </select>
+    </div>
+
+    <div class="lesson-grid" id="lesson-grid">
+      <!-- populated by JS -->
+    </div>
+
+    <div class="actions-row">
+      <h3>Today's Notes & Status</h3>
+      <button class="complete-btn" id="complete-btn" onclick="toggleComplete()">Mark Today's Lesson Complete</button>
+      <textarea class="notes-area" id="notes-area" placeholder="Add class notes, observations, or reminders..." oninput="saveNotes()"></textarea>
+      <div class="notes-saved" id="notes-saved">✓ Saved</div>
+    </div>
+  </div>
+
+  <!-- CALENDAR VIEW -->
+  <div class="view" id="view-calendar">
+    <div class="cal-header">
+      <div class="cal-nav">
+        <button onclick="prevMonth()">← Prev</button>
+      </div>
+      <h2 id="cal-month-label">—</h2>
+      <div class="cal-nav">
+        <button onclick="nextMonth()">Next →</button>
+      </div>
+    </div>
+    <div class="cal-grid">
+      <div class="cal-weekdays">
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div class="cal-days" id="cal-days"><!-- populated by JS --></div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#542D80"></div> Odd Day</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FDB924"></div> Even Day</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E6E7E8"></div> No School</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div> Exam/Finals</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#27ae60"></div> Camp</div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT POPUP -->
+<div class="popup-overlay" id="popup-overlay" onclick="closePopup(event)">
+  <div class="popup" id="popup-content">
+    <h3 id="popup-title">—</h3>
+    <div class="popup-date" id="popup-date">—</div>
+    <div class="popup-classes" id="popup-classes"></div>
+    <button class="popup-close" onclick="closePopup()">Close</button>
+  </div>
+</div>
+
+<script>
+// ── CALENDAR DATA ──────────────────────────────────────────────────────────
+// type: 'ODD' | 'EVEN' | 'NO_SCHOOL' | 'EXAM' | 'CAMP' | 'HALF_DAY' | 'PD_DAY'
+const SCHEDULE = {
+  // OCTOBER 2026
+  '2026-10-05': { type: 'ODD' },
+  '2026-10-06': { type: 'ODD', note: 'Special Schedule' },
+  '2026-10-07': { type: 'EVEN' },
+  '2026-10-08': { type: 'ODD', note: 'End Q1' },
+  '2026-10-09': { type: 'EVEN' },
+  '2026-10-11': { type: 'NO_SCHOOL', note: 'No School' },
+  '2026-10-12': { type: 'EVEN' },
+  '2026-10-13': { type: 'ODD' },
+  '2026-10-14': { type: 'EVEN' },
+  '2026-10-15': { type: 'NO_SCHOOL', note: 'Parent Conferences' },
+  '2026-10-18': { type: 'ODD' },
+  '2026-10-19': { type: 'EVEN' },
+  '2026-10-20': { type: 'ODD' },
+  '2026-10-21': { type: 'EVEN' },
+  '2026-10-22': { type: 'NO_SCHOOL', note: 'Parent Conferences' },
+  '2026-10-25': { type: 'ODD' },
+  '2026-10-26': { type: 'EVEN' },
+  '2026-10-27': { type: 'ODD' },
+  '2026-10-28': { type: 'EVEN' },
+  '2026-10-29': { type: 'ODD' },
+  // NOVEMBER 2026
+  '2026-11-01': { type: 'ODD' },
+  '2026-11-02': { type: 'EVEN' },
+  '2026-11-03': { type: 'ODD' },
+  '2026-11-04': { type: 'EVEN' },
+  '2026-11-05': { type: 'ODD' },
+  '2026-11-08': { type: 'EVEN' },
+  '2026-11-09': { type: 'ODD' },
+  '2026-11-10': { type: 'NO_SCHOOL', note: "Veteran's Day" },
+  '2026-11-11': { type: 'EVEN' },
+  '2026-11-12': { type: 'ODD' },
+  '2026-11-15': { type: 'EVEN' },
+  '2026-11-16': { type: 'ODD' },
+  '2026-11-17': { type: 'EVEN' },
+  '2026-11-18': { type: 'ODD' },
+  '2026-11-19': { type: 'HALF_DAY', note: 'Half Day' },
+  '2026-11-22': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
+  '2026-11-23': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
+  '2026-11-24': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
+  '2026-11-25': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
+  '2026-11-26': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
+  '2026-11-29': { type: 'ODD' },
+  '2026-11-30': { type: 'EVEN' },
+  // DECEMBER 2026
+  '2026-12-01': { type: 'ODD' },
+  '2026-12-02': { type: 'EVEN' },
+  '2026-12-03': { type: 'ODD' },
+  '2026-12-06': { type: 'EVEN' },
+  '2026-12-07': { type: 'ODD' },
+  '2026-12-08': { type: 'EVEN' },
+  '2026-12-09': { type: 'ODD' },
+  '2026-12-10': { type: 'EVEN' },
+  '2026-12-13': { type: 'EXAM', note: 'Final Exams' },
+  '2026-12-14': { type: 'EXAM', note: 'Final Exams' },
+  '2026-12-15': { type: 'EXAM', note: 'Final Exams' },
+  '2026-12-16': { type: 'EXAM', note: 'Final Exams' },
+  '2026-12-17': { type: 'EXAM', note: 'Final Exams' },
+  '2026-12-20': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2026-12-21': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2026-12-22': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2026-12-23': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2026-12-24': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2026-12-25': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2026-12-27': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2026-12-28': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2026-12-29': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2026-12-30': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2026-12-31': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  // JANUARY 2027
+  '2027-01-01': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2027-01-02': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2027-01-03': { type: 'NO_SCHOOL', note: 'Christmas Break' },
+  '2027-01-04': { type: 'PD_DAY', note: 'PD Day – No Students' },
+  '2027-01-05': { type: 'ODD', note: 'First Day Semester 2' },
+  '2027-01-06': { type: 'EVEN' },
+  '2027-01-07': { type: 'ODD' },
+  '2027-01-08': { type: 'EVEN' },
+  '2027-01-09': { type: 'ODD' },
+  '2027-01-11': { type: 'EVEN' },
+  '2027-01-12': { type: 'ODD' },
+  '2027-01-13': { type: 'EVEN' },
+  '2027-01-14': { type: 'ODD' },
+  '2027-01-15': { type: 'EVEN' },
+  '2027-01-17': { type: 'NO_SCHOOL', note: 'MLK Day' },
+  '2027-01-18': { type: 'ODD' },
+  '2027-01-19': { type: 'EVEN' },
+  '2027-01-20': { type: 'ODD' },
+  '2027-01-21': { type: 'EVEN' },
+  '2027-01-22': { type: 'ODD' },
+  '2027-01-25': { type: 'CAMP', note: 'Camp' },
+  '2027-01-26': { type: 'CAMP', note: 'Camp' },
+  '2027-01-27': { type: 'CAMP', note: 'Camp' },
+  '2027-01-28': { type: 'NO_SCHOOL', note: 'Camp Rest Day (7-12)' },
+  '2027-01-29': { type: 'EVEN' },
+  // FEBRUARY 2027
+  '2027-02-01': { type: 'ODD' },
+  '2027-02-02': { type: 'EVEN' },
+  '2027-02-03': { type: 'ODD' },
+  '2027-02-04': { type: 'EVEN' },
+  '2027-02-05': { type: 'ODD' },
+  '2027-02-08': { type: 'EVEN' },
+  '2027-02-09': { type: 'ODD' },
+  '2027-02-10': { type: 'EVEN' },
+  '2027-02-11': { type: 'ODD' },
+  '2027-02-12': { type: 'EVEN' },
+  '2027-02-13': { type: 'ODD' },
+  '2027-02-14': { type: 'NO_SCHOOL', note: 'Winter Break' },
+  '2027-02-15': { type: 'NO_SCHOOL', note: 'Winter Break' },
+  '2027-02-16': { type: 'NO_SCHOOL', note: 'Winter Break' },
+  '2027-02-17': { type: 'NO_SCHOOL', note: 'Winter Break' },
+  '2027-02-18': { type: 'NO_SCHOOL', note: 'Winter Break' },
+  '2027-02-19': { type: 'NO_SCHOOL', note: 'Winter Break' },
+  '2027-02-20': { type: 'PD_DAY', note: 'PD Day' },
+  '2027-02-21': { type: 'NO_SCHOOL', note: 'President\'s Day' },
+  '2027-02-22': { type: 'EVEN' },
+  '2027-02-23': { type: 'ODD' },
+  '2027-02-24': { type: 'EVEN' },
+  '2027-02-25': { type: 'ODD' },
+  '2027-02-26': { type: 'EVEN' },
+  // MARCH 2027
+  '2027-03-01': { type: 'ODD' },
+  '2027-03-02': { type: 'EVEN' },
+  '2027-03-03': { type: 'ODD' },
+  '2027-03-04': { type: 'EVEN' },
+  '2027-03-05': { type: 'ODD' },
+  '2027-03-08': { type: 'EVEN' },
+  '2027-03-09': { type: 'ODD' },
+  '2027-03-10': { type: 'EVEN' },
+  '2027-03-11': { type: 'ODD', note: 'End Q3' },
+  '2027-03-12': { type: 'EVEN' },
+  '2027-03-13': { type: 'ODD' },
+  '2027-03-15': { type: 'EVEN' },
+  '2027-03-16': { type: 'ODD' },
+  '2027-03-17': { type: 'EVEN' },
+  '2027-03-18': { type: 'ODD' },
+  '2027-03-19': { type: 'EVEN' },
+  '2027-03-20': { type: 'ODD' },
+  '2027-03-21': { type: 'NO_SCHOOL', note: 'Spring Break' },
+  '2027-03-22': { type: 'NO_SCHOOL', note: 'Spring Break' },
+  '2027-03-23': { type: 'NO_SCHOOL', note: 'Spring Break' },
+  '2027-03-24': { type: 'NO_SCHOOL', note: 'Spring Break' },
+  '2027-03-25': { type: 'NO_SCHOOL', note: 'Spring Break' },
+  '2027-03-28': { type: 'NO_SCHOOL', note: 'Spring Break' },
+  '2027-03-29': { type: 'NO_SCHOOL', note: 'Spring Break' },
+  '2027-03-30': { type: 'NO_SCHOOL', note: 'Spring Break' },
+  '2027-03-31': { type: 'NO_SCHOOL', note: 'Spring Break' },
+  // APRIL 2027
+  '2027-04-01': { type: 'NO_SCHOOL', note: 'Spring Break' },
+  '2027-04-04': { type: 'EVEN' },
+  '2027-04-05': { type: 'ODD' },
+  '2027-04-06': { type: 'EVEN' },
+  '2027-04-07': { type: 'ODD' },
+  '2027-04-08': { type: 'EVEN' },
+  '2027-04-11': { type: 'ODD' },
+  '2027-04-12': { type: 'EVEN' },
+  '2027-04-13': { type: 'ODD' },
+  '2027-04-14': { type: 'EVEN' },
+  '2027-04-15': { type: 'ODD' },
+  '2027-04-18': { type: 'EVEN' },
+  '2027-04-19': { type: 'ODD' },
+  '2027-04-20': { type: 'EVEN' },
+  '2027-04-21': { type: 'ODD' },
+  '2027-04-22': { type: 'EVEN' },
+  '2027-04-25': { type: 'ODD' },
+  '2027-04-26': { type: 'EVEN' },
+  '2027-04-27': { type: 'ODD' },
+  '2027-04-28': { type: 'EVEN' },
+  '2027-04-29': { type: 'ODD' },
+  // MAY 2027
+  '2027-05-01': { type: 'EVEN' },
+  '2027-05-02': { type: 'ODD', note: 'AP Exams begin' },
+  '2027-05-03': { type: 'EVEN', note: 'AP Exams' },
+  '2027-05-04': { type: 'ODD', note: 'AP Exams' },
+  '2027-05-05': { type: 'EVEN', note: 'AP Exams' },
+  '2027-05-06': { type: 'ODD', note: 'AP Exams' },
+  '2027-05-09': { type: 'EVEN', note: 'AP Exams' },
+  '2027-05-10': { type: 'ODD' },
+  '2027-05-11': { type: 'EVEN' },
+  '2027-05-12': { type: 'ODD' },
+  '2027-05-13': { type: 'EVEN' },
+  '2027-05-16': { type: 'EXAM', note: 'Final Exams' },
+  '2027-05-17': { type: 'EXAM', note: 'Final Exams' },
+  '2027-05-18': { type: 'EXAM', note: 'Final Exams' },
+  '2027-05-19': { type: 'EXAM', note: 'Last Day' },
+  '2027-05-20': { type: 'NO_SCHOOL', note: 'End Semester 2 / Q4' },
+};
+
+// ── CLASSES ────────────────────────────────────────────────────────────────
+const CLASSES = {
+  'precalc-p4': { name: 'Pre-Calculus', period: 4, dayType: 'EVEN' },
+  'geometry-p6': { name: 'Geometry', period: 6, dayType: 'EVEN' },
+  'precalc-p1': { name: 'Pre-Calculus', period: 1, dayType: 'ODD' },
+  'apcalc-p3': { name: 'AP Calculus', period: 3, dayType: 'ODD' },
+  'geometry-p5': { name: 'Geometry', period: 5, dayType: 'ODD' },
+};
+
+// ── LOREM IPSUM CONTENT ────────────────────────────────────────────────────
+const LOREM_LESSONS = {
+  'Pre-Calculus': [
+    { title: 'Introduction to Functions', topics: 'Domain and range, function notation, vertical line test', hw: 'p. 12 #1–20 (review function basics and notation)' },
+    { title: 'Polynomial Functions', topics: 'Degree, leading coefficient, end behavior, zeros', hw: 'p. 28 #3–15 odd (sketch polynomial graphs from equation)' },
+    { title: 'Rational Expressions', topics: 'Simplifying, multiplying, dividing rational expressions', hw: 'Worksheet 3A — simplify and evaluate 12 problems', quiz: true },
+    { title: 'Exponential Functions', topics: 'Growth/decay, base e, graphing transformations', hw: 'p. 56 #1–18 even (match equation to graph)' },
+    { title: 'Logarithmic Functions', topics: 'Log laws, natural log, change of base formula', hw: 'p. 71 #5–25 odd (evaluate and expand logarithms)' },
+    { title: 'Trigonometric Ratios', topics: 'Sine, cosine, tangent — unit circle introduction', hw: 'Memorize unit circle values for 0°, 30°, 45°, 60°, 90°', quiz: true },
+    { title: 'Graphing Trig Functions', topics: 'Amplitude, period, phase shift, vertical shift', hw: 'p. 104 #2–20 even (identify transformations)' },
+    { title: 'Inverse Trig Functions', topics: 'arcsin, arccos, arctan — domain restrictions', hw: 'p. 118 #1–16 (evaluate inverse trig expressions)' },
+    { title: 'Systems of Equations', topics: 'Substitution, elimination, matrix method introduction', hw: 'Worksheet 8B — solve 10 systems (3 methods required)', quiz: true },
+    { title: 'Conic Sections: Parabolas', topics: 'Standard form, vertex, focus, directrix', hw: 'p. 145 #3–21 odd (write equation from graph)' },
+    { title: 'Conic Sections: Ellipses', topics: 'Center, vertices, co-vertices, foci', hw: 'p. 157 #1–14 (sketch and label ellipses)' },
+    { title: 'Conic Sections: Hyperbolas', topics: 'Transverse axis, asymptotes, eccentricity', hw: 'p. 169 #2–18 even (identify type and graph)' },
+    { title: 'Sequences and Series', topics: 'Arithmetic and geometric sequences, summation notation', hw: 'Worksheet 12 — find sum and nth term (15 problems)', quiz: true },
+    { title: 'Limits Introduction', topics: 'Intuitive approach, one-sided limits, limit laws', hw: 'p. 192 #4–24 even (evaluate limits from graphs/tables)' },
+    { title: 'Continuity and Derivatives Preview', topics: 'Continuity conditions, instantaneous rate of change concept', hw: 'Review packet — complete all 20 problems before test' },
+    { title: 'Vectors: Introduction', topics: 'Component form, magnitude, unit vectors, dot product', hw: 'p. 212 #1–16 odd (vector operations)' },
+    { title: 'Parametric Equations', topics: 'Converting between parametric and rectangular form', hw: 'p. 224 #3–18 even (graph parametric curves)' },
+    { title: 'Polar Coordinates', topics: 'Polar vs. rectangular, converting, graphing polar equations', hw: 'Worksheet 17 — convert and plot 12 polar equations', quiz: true },
+  ],
+  'Geometry': [
+    { title: 'Points, Lines, and Planes', topics: 'Undefined terms, postulates, collinear points, segment bisectors', hw: 'p. 8 #1–20 (identify and name geometric figures)' },
+    { title: 'Angle Pairs', topics: 'Complementary, supplementary, vertical, adjacent angles', hw: 'Worksheet 2 — find missing angles in 12 diagrams' },
+    { title: 'Parallel Lines & Transversals', topics: 'Alternate interior/exterior angles, co-interior angles, proofs', hw: 'p. 34 #5–22 odd (prove angle relationships)', quiz: true },
+    { title: 'Triangle Congruence: SSS & SAS', topics: 'Congruence postulates, corresponding parts, CPCTC', hw: 'p. 52 #1–18 (write two-column congruence proofs)' },
+    { title: 'Triangle Congruence: ASA & AAS', topics: 'Angle-Side postulates, HL theorem for right triangles', hw: 'Worksheet 5 — identify congruence method and write proof' },
+    { title: 'Isosceles & Equilateral Triangles', topics: 'Base angles theorem, vertex angle, properties', hw: 'p. 74 #3–21 odd (find missing measures)', quiz: true },
+    { title: 'Midsegments of Triangles', topics: 'Midsegment theorem, proportional relationships', hw: 'p. 88 #2–16 even (apply midsegment properties)' },
+    { title: 'Quadrilaterals', topics: 'Parallelogram properties, rectangle, rhombus, square', hw: 'Worksheet 8 — classify and find missing values (16 problems)', quiz: true },
+    { title: 'Similarity: AA, SAS, SSS', topics: 'Similar polygons, scale factor, corresponding sides/angles', hw: 'p. 118 #4–22 even (set up and solve proportions)' },
+    { title: 'Right Triangle Trigonometry', topics: 'SOH-CAH-TOA, finding missing sides and angles', hw: 'p. 134 #1–20 (evaluate trig ratios, find unknowns)' },
+    { title: 'Special Right Triangles', topics: '30-60-90 and 45-45-90 triangle shortcuts', hw: 'Worksheet 11 — find all sides (20 triangles)', quiz: true },
+    { title: 'Circles: Arcs and Chords', topics: 'Central angles, arc length, chord properties', hw: 'p. 162 #2–18 even (find arc measures and lengths)' },
+    { title: 'Circles: Tangents and Secants', topics: 'Tangent lines, inscribed angles, secant-tangent angles', hw: 'Worksheet 13 — solve angle relationships in circles (14 problems)' },
+    { title: 'Area of Polygons', topics: 'Triangles, parallelograms, trapezoids, regular polygons', hw: 'p. 188 #1–22 odd (calculate areas)', quiz: true },
+    { title: 'Surface Area and Volume', topics: 'Prisms, pyramids, cylinders, cones, spheres', hw: 'Worksheet 15 — find SA and volume (10 composite solids)' },
+    { title: 'Geometric Probability', topics: 'Area models, length models, probability on a number line', hw: 'p. 212 #4–20 even (geometric probability problems)' },
+    { title: 'Transformations: Translations & Reflections', topics: 'Coordinate rules, image vs. pre-image, symmetry', hw: 'Worksheet 17 — graph and describe transformations', quiz: true },
+    { title: 'Transformations: Rotations & Dilations', topics: 'Rotation rules, center of dilation, scale factor', hw: 'p. 234 #2–18 even (perform and describe transformations)' },
+  ],
+  'AP Calculus': [
+    { title: 'Limits and Continuity Review', topics: 'L\'Hôpital\'s rule, squeeze theorem, types of discontinuity', hw: 'AP Free Response practice — 2011 #1 (show all work)' },
+    { title: 'Differentiation: Chain Rule', topics: 'Composite functions, implicit differentiation application', hw: 'p. 88 #15–35 odd (differentiate using chain rule)' },
+    { title: 'Related Rates', topics: 'Setting up equations, differentiating with respect to time', hw: 'Worksheet 3 — 8 related rates problems (ladder, water tank, shadow)', quiz: true },
+    { title: 'Optimization', topics: 'Critical points, first/second derivative tests, applied max/min', hw: 'AP practice set — 5 optimization problems' },
+    { title: 'Curve Sketching', topics: 'Concavity, inflection points, complete function analysis', hw: 'p. 134 #4–20 even (sketch from derivative information)' },
+    { title: 'Definite Integrals', topics: 'Riemann sums, fundamental theorem, net area', hw: 'Worksheet 6 — evaluate 12 definite integrals', quiz: true },
+    { title: 'Integration Techniques: Substitution', topics: 'u-substitution, choosing u, change of bounds', hw: 'p. 178 #3–25 odd (integrate using substitution)' },
+    { title: 'Integration by Parts', topics: 'LIATE rule, tabular method, repeated applications', hw: 'Worksheet 8 — 10 integration by parts problems' },
+    { title: 'Area Between Curves', topics: 'Intersections, integrating difference of functions', hw: 'p. 204 #2–16 even (set up and evaluate area integrals)', quiz: true },
+    { title: 'Volumes of Revolution: Disk/Washer', topics: 'Rotating around x-axis and y-axis, setting up integrals', hw: 'Worksheet 10 — 8 volume problems (sketch each solid)' },
+    { title: 'Differential Equations', topics: 'Separable equations, slope fields, initial value problems', hw: 'AP practice — slope field and DE packet (12 problems)', quiz: true },
+    { title: 'Sequences and Series: Convergence Tests', topics: 'Geometric, p-series, ratio test, comparison test', hw: 'p. 268 #4–30 even (determine convergence/divergence)' },
+    { title: 'Power Series and Taylor Series', topics: 'Radius of convergence, Taylor/Maclaurin polynomials', hw: 'Worksheet 13 — write Taylor series for 6 functions', quiz: true },
+    { title: 'AP Exam Strategy: FRQ Practice', topics: 'Justification language, graphical analysis, scoring rubric review', hw: 'Complete 2022 AP Calc AB Free Response set (all 6 problems)' },
+    { title: 'AP Exam Strategy: MCQ Practice', topics: 'Calculator vs. non-calculator sections, time management', hw: 'Timed MCQ set — 45 questions in 60 minutes' },
+  ],
+};
+
+// ── UTILITY FUNCTIONS ──────────────────────────────────────────────────────
+function toKey(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function getDayData(date) {
+  return SCHEDULE[toKey(date)] || null;
+}
+
+function getDatesForClass(classId) {
+  const cls = CLASSES[classId];
+  return Object.entries(SCHEDULE)
+    .filter(([, v]) => v.type === cls.dayType)
+    .map(([k]) => k)
+    .sort();
+}
+
+function getLessonForClass(classId, dateStr) {
+  const dates = getDatesForClass(classId);
+  const idx = dates.indexOf(dateStr);
+  if (idx < 0) return null;
+  const cls = CLASSES[classId];
+  const content = LOREM_LESSONS[cls.name] || [];
+  const lesson = content[idx % content.length];
+  return { ...lesson, lessonNum: idx + 1, date: dateStr };
+}
+
+function getNearestClassDate(classId) {
+  // Find today or most recent past class date for this class
+  const today = toKey(new Date());
+  const dates = getDatesForClass(classId);
+  let best = dates[0];
+  for (const d of dates) {
+    if (d <= today) best = d;
+    else break;
+  }
+  return best;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+}
+
+function formatDateShort(dateStr) {
+  if (!dateStr) return '—';
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+// ── PASSWORD GATE ──────────────────────────────────────────────────────────
+function checkPw() {
+  const val = document.getElementById('pw-input').value;
+  if (val === 'sdrock') {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initApp();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPw();
+});
+
+// ── APP INIT ───────────────────────────────────────────────────────────────
+function initApp() {
+  renderDayBanner();
+  renderDashboard();
+  calMonth = new Date();
+  calMonth.setDate(1);
+  renderCalendar();
+}
+
+function renderDayBanner() {
+  const today = new Date();
+  const key = toKey(today);
+  const data = SCHEDULE[key];
+
+  document.getElementById('banner-date').textContent = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+  const badge = document.getElementById('day-badge');
+  if (!data) {
+    badge.textContent = 'No Data';
+    badge.className = 'day-badge no-school';
+    document.getElementById('banner-weekday').textContent = 'Check the calendar for schedule info';
+  } else if (data.type === 'ODD') {
+    badge.textContent = 'ODD DAY';
+    badge.className = 'day-badge odd';
+    document.getElementById('banner-weekday').textContent = 'Classes: P1 (PreCalc) · P3 (AP Calc) · P5 (Geometry)';
+  } else if (data.type === 'EVEN') {
+    badge.textContent = 'EVEN DAY';
+    badge.className = 'day-badge even';
+    document.getElementById('banner-weekday').textContent = 'Classes: P4 (PreCalc) · P6 (Geometry)';
+  } else {
+    badge.textContent = data.note || data.type;
+    badge.className = 'day-badge no-school';
+    document.getElementById('banner-weekday').textContent = 'No regular classes today';
+  }
+}
+
+// ── DASHBOARD ──────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const classId = document.getElementById('class-select').value;
+  const dates = getDatesForClass(classId);
+  const today = toKey(new Date());
+
+  // Find index of today or nearest past
+  let todayIdx = -1;
+  for (let i = 0; i < dates.length; i++) {
+    if (dates[i] <= today) todayIdx = i;
+    else break;
+  }
+  if (todayIdx < 0) todayIdx = 0;
+
+  const prevDate = todayIdx > 0 ? dates[todayIdx - 1] : null;
+  const todayDate = dates[todayIdx];
+  const nextDate = todayIdx < dates.length - 1 ? dates[todayIdx + 1] : null;
+
+  const prevLesson = prevDate ? getLessonForClass(classId, prevDate) : null;
+  const todayLesson = todayDate ? getLessonForClass(classId, todayDate) : null;
+  const nextLesson = nextDate ? getLessonForClass(classId, nextDate) : null;
+
+  const grid = document.getElementById('lesson-grid');
+  grid.innerHTML = '';
+
+  grid.appendChild(buildCard(prevLesson, 'Previous', 'prev'));
+  grid.appendChild(buildCard(todayLesson, "Today's Lesson", 'today'));
+  grid.appendChild(buildCard(nextLesson, 'Next Lesson', 'next'));
+
+  // Load notes and complete status
+  const noteKey = `notes_${classId}_${todayDate}`;
+  const completeKey = `complete_${classId}_${todayDate}`;
+  document.getElementById('notes-area').value = localStorage.getItem(noteKey) || '';
+  const isDone = localStorage.getItem(completeKey) === '1';
+  const btn = document.getElementById('complete-btn');
+  btn.textContent = isDone ? '✓ Lesson Marked Complete' : 'Mark Today\'s Lesson Complete';
+  btn.className = 'complete-btn' + (isDone ? ' done' : '');
+  btn._noteKey = noteKey;
+  btn._completeKey = completeKey;
+}
+
+function buildCard(lesson, label, type) {
+  const card = document.createElement('div');
+  card.className = 'lesson-card' + (type === 'today' ? ' today' : '');
+
+  if (!lesson) {
+    card.innerHTML = `<div class="card-label">${label}</div><div style="color:#aaa;font-size:13px;margin-top:16px;">No class</div>`;
+    return card;
+  }
+
+  const quizTag = lesson.quiz ? `<div class="card-quiz">⚠ QUIZ / TEST</div>` : '';
+  const hw = lesson.hw || 'No homework assigned — check with teacher.';
+
+  card.innerHTML = `
+    <div class="card-label">${label}</div>
+    <div class="card-date">${formatDateShort(lesson.date)}</div>
+    ${quizTag}
+    <div class="card-lesson-num">Lesson ${lesson.lessonNum}</div>
+    <div class="card-title">${lesson.title}</div>
+    <div class="card-topics">${lesson.topics}</div>
+    <div class="card-hw"><strong>Homework</strong>${hw}</div>
+  `;
+  return card;
+}
+
+function toggleComplete() {
+  const btn = document.getElementById('complete-btn');
+  const key = btn._completeKey;
+  const isDone = localStorage.getItem(key) === '1';
+  if (isDone) {
+    localStorage.removeItem(key);
+    btn.textContent = 'Mark Today\'s Lesson Complete';
+    btn.className = 'complete-btn';
+  } else {
+    localStorage.setItem(key, '1');
+    btn.textContent = '✓ Lesson Marked Complete';
+    btn.className = 'complete-btn done';
+  }
+}
+
+function saveNotes() {
+  const btn = document.getElementById('complete-btn');
+  const key = btn._noteKey;
+  localStorage.setItem(key, document.getElementById('notes-area').value);
+  const saved = document.getElementById('notes-saved');
+  saved.style.display = 'block';
+  clearTimeout(saveNotes._timer);
+  saveNotes._timer = setTimeout(() => { saved.style.display = 'none'; }, 1500);
+}
+
+// ── CALENDAR ────────────────────────────────────────────────────────────────
+let calMonth = new Date();
+
+function renderCalendar() {
+  const y = calMonth.getFullYear();
+  const m = calMonth.getMonth();
+  document.getElementById('cal-month-label').textContent =
+    calMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  const firstDay = new Date(y, m, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const today = toKey(new Date());
+
+  const container = document.getElementById('cal-days');
+  container.innerHTML = '';
+
+  // blank cells before first day
+  for (let i = 0; i < firstDay; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'cal-day empty';
+    container.appendChild(blank);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const data = SCHEDULE[dateStr];
+    const cell = document.createElement('div');
+    cell.className = 'cal-day' + (dateStr === today ? ' today-cell' : '');
+
+    const dayNum = document.createElement('div');
+    dayNum.className = 'cal-day-num';
+    if (dateStr === today) {
+      const inner = document.createElement('div');
+      inner.textContent = d;
+      dayNum.appendChild(inner);
+    } else {
+      dayNum.textContent = d;
+    }
+    cell.appendChild(dayNum);
+
+    if (data) {
+      const badge = document.createElement('div');
+      const typeClass = data.type.toLowerCase().replace('_', '-');
+      const displayMap = {
+        'ODD': 'ODD', 'EVEN': 'EVEN', 'NO_SCHOOL': 'No School',
+        'EXAM': 'EXAM', 'CAMP': 'CAMP', 'HALF_DAY': 'Half Day', 'PD_DAY': 'PD Day'
+      };
+      badge.className = `cal-type ${typeClass}`;
+      badge.textContent = displayMap[data.type] || data.type;
+      cell.appendChild(badge);
+
+      if (data.note) {
+        const note = document.createElement('span');
+        note.className = 'cal-note';
+        note.textContent = data.note;
+        cell.appendChild(note);
+      }
+
+      // For exam days, add clickable detail
+      if (data.type === 'EXAM') {
+        const ev = document.createElement('span');
+        ev.className = 'cal-event';
+        ev.textContent = 'View details';
+        ev.onclick = (e) => { e.stopPropagation(); showPopup(dateStr, data); };
+        cell.appendChild(ev);
+      }
+    }
+
+    container.appendChild(cell);
+  }
+}
+
+function prevMonth() {
+  calMonth.setMonth(calMonth.getMonth() - 1);
+  renderCalendar();
+}
+function nextMonth() {
+  calMonth.setMonth(calMonth.getMonth() + 1);
+  renderCalendar();
+}
+
+// ── POPUP ──────────────────────────────────────────────────────────────────
+function showPopup(dateStr, data) {
+  document.getElementById('popup-title').textContent = data.note || 'Event Details';
+  document.getElementById('popup-date').textContent = formatDate(dateStr);
+  const cls = document.getElementById('popup-classes');
+  cls.innerHTML = `
+    <div class="popup-class">
+      <strong>Schedule Note</strong>
+      <span>${data.type === 'EXAM' ? 'Finals / Exam schedule in effect. Regular class periods may not meet as scheduled.' : data.note || 'See teacher for details.'}</span>
+    </div>
+  `;
+  document.getElementById('popup-overlay').classList.add('open');
+}
+function closePopup(e) {
+  if (!e || e.target === document.getElementById('popup-overlay')) {
+    document.getElementById('popup-overlay').classList.remove('open');
+  }
+}
+
+// ── VIEW SWITCHING ─────────────────────────────────────────────────────────
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.querySelector(`nav button[onclick="showView('${name}')"]`).classList.add('active');
+}
+</script>
+</body>
+</html>
