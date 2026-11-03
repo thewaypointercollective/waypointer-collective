@@ -788,18 +788,20 @@ const SCHEDULE = {
   '2026-11-02': { type: 'ODD' },
   '2026-11-03': { type: 'EVEN' },
   '2026-11-04': { type: 'ODD' },
-  '2026-11-05': { type: 'ODD' },
-  // Nov 8 = Sunday — no entry
-  '2026-11-09': { type: 'ODD' },
-  '2026-11-10': { type: 'NO_SCHOOL', note: "Veteran's Day" },
-  '2026-11-11': { type: 'EVEN' },
-  '2026-11-12': { type: 'ODD' },
-  // Nov 15 = Sunday — no entry
-  '2026-11-16': { type: 'ODD' },
-  '2026-11-17': { type: 'EVEN' },
-  '2026-11-18': { type: 'ODD' },
-  '2026-11-19': { type: 'EVEN' },
-  '2026-11-20': { type: 'HALF_DAY', note: 'K-12 Half Day' },
+  '2026-11-05': { type: 'EVEN' },
+  '2026-11-06': { type: 'ODD' },
+  // Nov 7-8 = weekend; Nov 8 = Sunday — no entries
+  '2026-11-09': { type: 'EVEN' },
+  '2026-11-10': { type: 'ODD' },
+  '2026-11-11': { type: 'NO_SCHOOL', note: "Veteran's Day" },
+  '2026-11-12': { type: 'EVEN' },
+  '2026-11-13': { type: 'ODD' },
+  // Nov 14-15 = weekend — no entries
+  '2026-11-16': { type: 'EVEN' },
+  '2026-11-17': { type: 'ODD' },
+  '2026-11-18': { type: 'EVEN' },
+  '2026-11-19': { type: 'ODD' },
+  '2026-11-20': { type: 'HALF_DAY', note: 'K-12 Half Day — Even' },
   // Nov 21-22 = weekend; Thanksgiving Break Mon-Fri
   '2026-11-23': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
   '2026-11-24': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
@@ -807,7 +809,7 @@ const SCHEDULE = {
   '2026-11-26': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
   '2026-11-27': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
   // Nov 29 = Sunday — no entry
-  '2026-11-30': { type: 'EVEN' },
+  '2026-11-30': { type: 'ODD' },
   // DECEMBER 2026
   '2026-12-01': { type: 'ODD' },
   '2026-12-02': { type: 'EVEN' },
@@ -1015,9 +1017,14 @@ const LOREM_LESSONS = {
     { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
     ...CH3,
   ],
-  // Pre-Calculus P4 (EVEN): Ch3 starts at index 2 (Oct 14 = EVEN day #3)
-  // Indices 0–1 = pre-Ch3; 2–12 = Ch3 Days 1–11
+  // Pre-Calculus P4 (EVEN): Ch3 starts at index 6 (Oct 28 = EVEN day #7)
+  // Indices 0–5 = pre-Ch3; 6–16 = Ch3 Days 1–11
+  // Nov 5 (EVEN day #9, index 8) = Ch3 Day 3 — Quiz 3-1 & 3-2
   'precalc-p4': [
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
     { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
     { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
     ...CH3,
@@ -1046,9 +1053,12 @@ const LOREM_LESSONS = {
     { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
     ...CH3_GEO,
   ],
-  // Geometry P6 (EVEN): Ch3 starts at index 1 (Oct 9 = EVEN day #2)
-  // Index 0 = pre-Ch3; 1–8 = Ch3 Days 1–8
+  // Geometry P6 (EVEN): Ch3 starts at index 2 (Oct 14 = EVEN day #3)
+  // Indices 0–1 = pre-Ch3; 2–9 = Ch3 Days 1–8
+  // Nov 5 (EVEN day #9, index 8) = Ch3 Day 7 — Review
+  // Ch3 Day 8 (Test) = index 9 = Nov 11 (Nov 10 is Veteran's Day)
   'geometry-p6': [
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
     { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
     ...CH3_GEO,
   ],
