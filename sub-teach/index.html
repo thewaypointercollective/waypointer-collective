@@ -171,12 +171,18 @@
     .day-banner {
       background: var(--white);
       border-radius: 12px;
-      padding: 20px 24px;
-      margin-bottom: 20px;
+      padding: 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .day-center {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .day-left h2 {
       font-size: 22px;
@@ -198,6 +204,59 @@
     .day-badge.odd { background: var(--purple); color: var(--gold); }
     .day-badge.even { background: var(--gold); color: var(--purple); }
     .day-badge.no-school { background: var(--light-gray); color: var(--charcoal); font-size: 13px; }
+    .day-nav-btn {
+      background: var(--light-gray);
+      border: none;
+      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .day-nav-btn:hover:not(:disabled) { background: var(--purple); color: var(--white); }
+    .day-nav-btn:disabled { opacity: 0.3; cursor: default; }
+    .today-bar {
+      display: none;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .today-bar button {
+      background: transparent;
+      border: 2px solid var(--purple);
+      border-radius: 8px;
+      color: var(--purple);
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .today-bar button:hover { background: var(--purple); color: var(--white); }
+    .lesson-card.selected {
+      border: 2px solid var(--gold);
+      box-shadow: 0 4px 20px rgba(253,185,36,0.2);
+    }
+    .lesson-card.selected::before {
+      content: 'VIEWING';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--purple);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
 
     /* ── CLASS SELECTOR ── */
     .class-selector {
@@ -606,11 +665,18 @@
   <!-- DASHBOARD VIEW -->
   <div class="view active" id="view-dashboard">
     <div class="day-banner">
-      <div class="day-left">
-        <h2 id="banner-date">—</h2>
-        <p id="banner-weekday">—</p>
+      <button class="day-nav-btn" id="btn-prev" onclick="navDay(-1)">&#8592;</button>
+      <div class="day-center">
+        <div class="day-left">
+          <h2 id="banner-date">—</h2>
+          <p id="banner-weekday">—</p>
+        </div>
+        <div class="day-badge" id="day-badge">—</div>
       </div>
-      <div class="day-badge" id="day-badge">—</div>
+      <button class="day-nav-btn" id="btn-next" onclick="navDay(1)">&#8594;</button>
+    </div>
+    <div class="today-bar" id="today-bar">
+      <button onclick="goToday()">↩ Jump to Today</button>
     </div>
 
     <div class="class-selector">
@@ -700,10 +766,10 @@ const SCHEDULE = {
   '2026-10-29': { type: 'ODD' },
   '2026-10-30': { type: 'NO_SCHOOL', note: 'K-12 Parent Conferences' },
   // NOVEMBER 2026
-  '2026-11-01': { type: 'ODD' },
-  '2026-11-02': { type: 'EVEN' },
-  '2026-11-03': { type: 'ODD' },
-  '2026-11-04': { type: 'EVEN' },
+  '2026-11-01': { type: 'EVEN' },
+  '2026-11-02': { type: 'ODD' },
+  '2026-11-03': { type: 'EVEN' },
+  '2026-11-04': { type: 'ODD' },
   '2026-11-05': { type: 'ODD' },
   '2026-11-08': { type: 'EVEN' },
   '2026-11-09': { type: 'ODD' },
@@ -880,26 +946,96 @@ const CLASSES = {
 };
 
 // ── LOREM IPSUM CONTENT ────────────────────────────────────────────────────
+// Ch. 3 lesson plan — shared content, indexed per class below
+// Geometry Ch. 3 — 8 days
+const CH3_GEO = [
+  { title: 'Geo Ch. 3, Day 1 — Sections 3-1 & 3-2', topics: 'Warm-up p. 141 #1–8 · Section 3-1 Notes; CW p. 144 #1–11 · Section 3-2 Notes; CW p. 152 #1–6', hw: 'p. 145–146 #12–34 even, 42, 44; p. 152 #7–23 all · Study — Quiz next class' },
+  { title: 'Geo Ch. 3, Day 2 — Quiz 3-1 & 3-2', topics: 'Warm-up p. 154 #35–39, p. 164 #1–12 · Quiz: Sections 3-1 and 3-2', hw: 'p. 163 #52–76 even (63 = 5 steps)', quiz: true },
+  { title: 'Geo Ch. 3, Day 3 — Section 3-3', topics: 'Warm-up p. 154 #40–46 · Section 3-3 Notes', hw: 'p. 160–161 #10–40 even · Study — Quiz next class' },
+  { title: 'Geo Ch. 3, Day 4 — Quiz 3-3 & Section 3-4', topics: 'Review on board · Quiz: Section 3-3 · Section 3-4 Notes', hw: 'p. 169 #14–32 even', quiz: true },
+  { title: 'Geo Ch. 3, Day 5 — Section 3-5', topics: 'Warm-up p. 170 #38, 40, 42, 55–57 · Section 3-5 Notes; CW p. 175 #1–5 · Sudoku Puzzles', hw: 'p. 169 #13–31 odd; p. 176–177 #8–20 even, 23 (3 steps), 24 (4 steps) · Study — Quiz next class' },
+  { title: 'Geo Ch. 3, Day 6 — Quiz 3-4 & 3-5; Begin Review', topics: 'Warm-up p. 179 #39–48 · Quiz: Sections 3-4 and 3-5 · Begin Review', hw: 'p. 191 #1–8; p. 192–194 #10–24 even, 25; p. 195 #17–23', quiz: true },
+  { title: 'Geo Ch. 3, Day 7 — Section 3-6 & Review', topics: 'Section 3-6 · Work on Review p. 191 #1–8; p. 192–194 #10–24 even, 25; p. 195 #17–23 all', hw: 'p. 185–186 #6–18 even · Finish/Correct Review · Organize packet · Study — Test next class' },
+  { title: 'Geo Ch. 3, Day 8 — Chapter 3 Test', topics: 'Turn in Chapter 3 Packet · Chapter 3 Test · October Problem', hw: 'No homework', quiz: true },
+];
+
+// AP Calculus Ch. 4 — 11 days
+const CH4_APCALC = [
+  { title: 'AP Calc Ch. 4, Day 1 — Section 4-1', topics: 'Section 4-1 Notes', hw: 'p. 193–194 #3–30 every 3rd' },
+  { title: 'AP Calc Ch. 4, Day 2 — Sections 4-1 cont. & 4-2', topics: 'Warm-up p. 194–195 #47–50 · Section 4-1 cont. and 4-2 Notes', hw: 'p. 194 #36–42 even; p. 202 #3–39 every 3rd' },
+  { title: 'AP Calc Ch. 4, Day 3 — Section 4-3', topics: 'Section 4-3 Notes', hw: 'p. 215–217 #3–36 every 3rd, 4, 8, 20, 24, 26, 30, 31, 34, 39–41, 47–48, 50 · Study — Quiz next class' },
+  { title: 'AP Calc Ch. 4, Day 4 — Quiz 4-1 to 4-3', topics: 'Quiz: Sections 4-1 to 4-3', hw: 'p. 218 #55–60, #1–4 all', quiz: true },
+  { title: 'AP Calc Ch. 4, Day 5 — Section 4-4', topics: 'Warm-up p. 226 Quick Review #1–4, 9 · Section 4-4 Notes', hw: 'p. 226–228 #1–10, 13, 14, 18, 23–26 all' },
+  { title: 'AP Calc Ch. 4, Day 6 — Section 4-5', topics: 'Warm-up QR p. 242 #1–5 · Section 4-5 Notes', hw: 'p. 242–243 #2–30 even' },
+  { title: 'AP Calc Ch. 4, Day 7 — Section 4-5 cont.', topics: 'Section 4-5 Notes continued', hw: 'p. 243–244 #31–34 all, 36–54 every 3rd, 42' },
+  { title: 'AP Calc Ch. 4, Day 8 — Section 4-6', topics: 'Section 4-6 Notes', hw: 'p. 251–254 #2–10 even, 14–18 even, 22, 24, 25, 28, 33, 36–41 all · Study — Quiz next class' },
+  { title: 'AP Calc Ch. 4, Day 9 — Quiz 4-4 to 4-6', topics: 'Quiz: Sections 4-4 to 4-6', hw: 'p. 256–259 #1, 4, 6, 9, 17, 20, 23, 25, 27, 32, 33, 35, 37–40, 42, 43, 45, 49, 54, 58–60, 62, 66', quiz: true },
+  { title: 'AP Calc Ch. 4, Day 10 — Review', topics: 'Review day · Organize packet · Study — Test tomorrow', hw: 'Review Handout; Organize Packet; Study — Test next class' },
+  { title: 'AP Calc Ch. 4, Day 11 — Chapter 4 Test', topics: 'Turn in Chapter 4 Packet · Chapter 4 Test', hw: 'November DBQ', quiz: true },
+];
+
+// Pre-Calculus Ch. 3 — 11 days
+const CH3 = [
+  { title: 'Ch. 3, Day 1 — Sections 3-1 & 3-2', topics: 'Section 3-1 Notes; CW p. 134 #6–12 · Section 3-2 Notes; CW p. 143 #13, 15, 17, 21', hw: 'p. 134–135 #14–26 even, 28–30, 32, 38; p. 143–144 #14–24 even, 42' },
+  { title: 'Ch. 3, Day 2 — Section 3-3', topics: 'Warm-up p. 136 #44–50 · Section 3-3 Notes; CW p. 150 #13, 15, 23', hw: 'p. 150 #14–34 even · Study — Quiz next class' },
+  { title: 'Ch. 3, Day 3 — Quiz 3-1 & 3-2', topics: 'Warm-up p. 151 Mid-Chap. Quiz #1–6 · Quiz: Sections 3-1 and 3-2', hw: 'Mid-Chapter Test #1–7', quiz: true },
+  { title: 'Ch. 3, Day 4 — Section 3-4', topics: 'Warm-up p. 151 #46–53 · Mad Minute · Section 3-4 Notes · 24-game', hw: 'p. 156–157 #16–34 even, 42 · Study — Quiz next class' },
+  { title: 'Ch. 3, Day 5 — Section 3-5 & Quiz 3-3/3-4', topics: 'Section 3-5 Notes; CW p. 165 #5–6 · Quiz: Sections 3-3 and 3-4', hw: 'p. 166 #12–19 all', quiz: true },
+  { title: 'Ch. 3, Day 6 — Section 3-5 cont.', topics: 'Warm-up p. 158 #51–56 · Section 3-5 Notes continued', hw: 'p. 166–167 #20–31 all' },
+  { title: 'Ch. 3, Day 7 — Section 3-6', topics: 'Section 3-6 Notes; CW p. 176 #4–11 all · Review Handout', hw: 'Finish Review Handout; p. 177 #14–28 even · Study — Quiz next class' },
+  { title: 'Ch. 3, Day 8 — Section 3-7 & Quiz 3-5/3-6', topics: 'Section 3-7 Notes; CW p. 185–186 #5–10 all · Quiz: Sections 3-5 and 3-6', hw: 'p. 186–187 #14–32 even', quiz: true },
+  { title: 'Ch. 3, Day 9 — Section 3-8', topics: 'Warm-up p. 188 #48–56 all · Section 3-8 Notes', hw: 'p. 194 #14–26 even' },
+  { title: 'Ch. 3, Day 10 — Review', topics: 'Work on review packet · Organize packet · Study — Test next class', hw: 'Review p. 197 #1–10 all; p. 198–200 #12–58 even · Organize Packet' },
+  { title: 'Ch. 3, Day 11 — Chapter 3 Test', topics: 'Turn in Chapter 3 Packet · Chapter 3 Test', hw: 'No homework', quiz: true },
+];
+
 const LOREM_LESSONS = {
-  'Pre-Calculus': [
-    { title: 'Introduction to Functions', topics: 'Domain and range, function notation, vertical line test', hw: 'p. 12 #1–20 (review function basics and notation)' },
-    { title: 'Polynomial Functions', topics: 'Degree, leading coefficient, end behavior, zeros', hw: 'p. 28 #3–15 odd (sketch polynomial graphs from equation)' },
-    { title: 'Rational Expressions', topics: 'Simplifying, multiplying, dividing rational expressions', hw: 'Worksheet 3A — simplify and evaluate 12 problems', quiz: true },
-    { title: 'Exponential Functions', topics: 'Growth/decay, base e, graphing transformations', hw: 'p. 56 #1–18 even (match equation to graph)' },
-    { title: 'Logarithmic Functions', topics: 'Log laws, natural log, change of base formula', hw: 'p. 71 #5–25 odd (evaluate and expand logarithms)' },
-    { title: 'Trigonometric Ratios', topics: 'Sine, cosine, tangent — unit circle introduction', hw: 'Memorize unit circle values for 0°, 30°, 45°, 60°, 90°', quiz: true },
-    { title: 'Graphing Trig Functions', topics: 'Amplitude, period, phase shift, vertical shift', hw: 'p. 104 #2–20 even (identify transformations)' },
-    { title: 'Inverse Trig Functions', topics: 'arcsin, arccos, arctan — domain restrictions', hw: 'p. 118 #1–16 (evaluate inverse trig expressions)' },
-    { title: 'Systems of Equations', topics: 'Substitution, elimination, matrix method introduction', hw: 'Worksheet 8B — solve 10 systems (3 methods required)', quiz: true },
-    { title: 'Conic Sections: Parabolas', topics: 'Standard form, vertex, focus, directrix', hw: 'p. 145 #3–21 odd (write equation from graph)' },
-    { title: 'Conic Sections: Ellipses', topics: 'Center, vertices, co-vertices, foci', hw: 'p. 157 #1–14 (sketch and label ellipses)' },
-    { title: 'Conic Sections: Hyperbolas', topics: 'Transverse axis, asymptotes, eccentricity', hw: 'p. 169 #2–18 even (identify type and graph)' },
-    { title: 'Sequences and Series', topics: 'Arithmetic and geometric sequences, summation notation', hw: 'Worksheet 12 — find sum and nth term (15 problems)', quiz: true },
-    { title: 'Limits Introduction', topics: 'Intuitive approach, one-sided limits, limit laws', hw: 'p. 192 #4–24 even (evaluate limits from graphs/tables)' },
-    { title: 'Continuity and Derivatives Preview', topics: 'Continuity conditions, instantaneous rate of change concept', hw: 'Review packet — complete all 20 problems before test' },
-    { title: 'Vectors: Introduction', topics: 'Component form, magnitude, unit vectors, dot product', hw: 'p. 212 #1–16 odd (vector operations)' },
-    { title: 'Parametric Equations', topics: 'Converting between parametric and rectangular form', hw: 'p. 224 #3–18 even (graph parametric curves)' },
-    { title: 'Polar Coordinates', topics: 'Polar vs. rectangular, converting, graphing polar equations', hw: 'Worksheet 17 — convert and plot 12 polar equations', quiz: true },
+  // Pre-Calculus P1 (ODD): Ch3 starts at index 5 (Oct 20 = ODD day #6)
+  // Indices 0–4 = pre-Ch3; 5–15 = Ch3 Days 1–11
+  'precalc-p1': [
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    ...CH3,
+  ],
+  // Pre-Calculus P4 (EVEN): Ch3 starts at index 2 (Oct 14 = EVEN day #3)
+  // Indices 0–1 = pre-Ch3; 2–12 = Ch3 Days 1–11
+  'precalc-p4': [
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    ...CH3,
+  ],
+  // AP Calc P3 (ODD): Ch3 ran indices 0–9; Ch4 starts at index 10 (Nov 3)
+  'apcalc-p3': [
+    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
+    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
+    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
+    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
+    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
+    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
+    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
+    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
+    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
+    { title: 'Chapter 3 — Test Day', topics: 'Turn in Chapter 3 Packet · Chapter 3 Test', hw: 'No homework', quiz: true },
+    ...CH4_APCALC,
+  ],
+  // Geometry P5 (ODD): Ch3 starts at index 5 (Oct 20 = ODD day #6)
+  // Indices 0–4 = pre-Ch3; 5–12 = Ch3 Days 1–8
+  'geometry-p5': [
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    ...CH3_GEO,
+  ],
+  // Geometry P6 (EVEN): Ch3 starts at index 1 (Oct 9 = EVEN day #2)
+  // Index 0 = pre-Ch3; 1–8 = Ch3 Days 1–8
+  'geometry-p6': [
+    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
+    ...CH3_GEO,
   ],
   'Geometry': [
     { title: 'Points, Lines, and Planes', topics: 'Undefined terms, postulates, collinear points, segment bisectors', hw: 'p. 8 #1–20 (identify and name geometric figures)' },
@@ -965,7 +1101,7 @@ function getLessonForClass(classId, dateStr) {
   const idx = dates.indexOf(dateStr);
   if (idx < 0) return null;
   const cls = CLASSES[classId];
-  const content = LOREM_LESSONS[cls.name] || [];
+  const content = LOREM_LESSONS[classId] || LOREM_LESSONS[cls.name] || [];
   const lesson = content[idx % content.length];
   return { ...lesson, lessonNum: idx + 1, date: dateStr };
 }
@@ -1014,26 +1150,53 @@ document.getElementById('pw-input').addEventListener('keydown', e => {
 });
 
 // ── APP INIT ───────────────────────────────────────────────────────────────
+let viewedClassId = null;
+let viewedIdx = 0;
+
 function initApp() {
-  renderDayBanner();
+  viewedClassId = document.getElementById('class-select').value;
+  resetToToday(viewedClassId);
   renderDashboard();
   calMonth = new Date();
   calMonth.setDate(1);
   renderCalendar();
 }
 
-function renderDayBanner() {
-  const today = new Date();
-  const key = toKey(today);
-  const data = SCHEDULE[key];
+function resetToToday(classId) {
+  const dates = getDatesForClass(classId);
+  const today = toKey(new Date());
+  viewedIdx = 0;
+  for (let i = 0; i < dates.length; i++) {
+    if (dates[i] <= today) viewedIdx = i;
+    else break;
+  }
+}
 
-  document.getElementById('banner-date').textContent = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+function navDay(dir) {
+  const dates = getDatesForClass(viewedClassId);
+  const newIdx = viewedIdx + dir;
+  if (newIdx >= 0 && newIdx < dates.length) {
+    viewedIdx = newIdx;
+    renderDashboard();
+  }
+}
 
+function goToday() {
+  resetToToday(viewedClassId);
+  renderDashboard();
+}
+
+function renderDayBanner(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  document.getElementById('banner-date').textContent = dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+  const data = SCHEDULE[dateStr];
   const badge = document.getElementById('day-badge');
   if (!data) {
     badge.textContent = 'No Data';
     badge.className = 'day-badge no-school';
-    document.getElementById('banner-weekday').textContent = 'Check the calendar for schedule info';
+    document.getElementById('banner-weekday').textContent = 'No schedule data';
   } else if (data.type === 'ODD') {
     badge.textContent = 'ODD DAY';
     badge.className = 'day-badge odd';
@@ -1052,47 +1215,57 @@ function renderDayBanner() {
 // ── DASHBOARD ──────────────────────────────────────────────────────────────
 function renderDashboard() {
   const classId = document.getElementById('class-select').value;
+
+  // If class changed, reset view to today for new class
+  if (classId !== viewedClassId) {
+    viewedClassId = classId;
+    resetToToday(classId);
+  }
+
   const dates = getDatesForClass(classId);
   const today = toKey(new Date());
+  const viewedDate = dates[viewedIdx];
 
-  // Find index of today or nearest past
-  let todayIdx = -1;
-  for (let i = 0; i < dates.length; i++) {
-    if (dates[i] <= today) todayIdx = i;
-    else break;
-  }
-  if (todayIdx < 0) todayIdx = 0;
+  const prevDate = viewedIdx > 0 ? dates[viewedIdx - 1] : null;
+  const nextDate = viewedIdx < dates.length - 1 ? dates[viewedIdx + 1] : null;
 
-  const prevDate = todayIdx > 0 ? dates[todayIdx - 1] : null;
-  const todayDate = dates[todayIdx];
-  const nextDate = todayIdx < dates.length - 1 ? dates[todayIdx + 1] : null;
+  // Update banner and nav controls
+  renderDayBanner(viewedDate);
+  document.getElementById('btn-prev').disabled = viewedIdx === 0;
+  document.getElementById('btn-next').disabled = viewedIdx === dates.length - 1;
 
+  const todayBar = document.getElementById('today-bar');
+  todayBar.style.display = (viewedDate !== today) ? 'flex' : 'none';
+
+  const isToday = viewedDate === today;
   const prevLesson = prevDate ? getLessonForClass(classId, prevDate) : null;
-  const todayLesson = todayDate ? getLessonForClass(classId, todayDate) : null;
+  const viewedLesson = getLessonForClass(classId, viewedDate);
   const nextLesson = nextDate ? getLessonForClass(classId, nextDate) : null;
 
   const grid = document.getElementById('lesson-grid');
   grid.innerHTML = '';
-
   grid.appendChild(buildCard(prevLesson, 'Previous', 'prev'));
-  grid.appendChild(buildCard(todayLesson, "Today's Lesson", 'today'));
+  grid.appendChild(buildCard(viewedLesson, isToday ? "Today's Lesson" : 'Selected', isToday ? 'today' : 'selected'));
   grid.appendChild(buildCard(nextLesson, 'Next Lesson', 'next'));
 
-  // Load notes and complete status
-  const noteKey = `notes_${classId}_${todayDate}`;
-  const completeKey = `complete_${classId}_${todayDate}`;
+  // Notes and complete status
+  const noteKey = `notes_${classId}_${viewedDate}`;
+  const completeKey = `complete_${classId}_${viewedDate}`;
   document.getElementById('notes-area').value = localStorage.getItem(noteKey) || '';
   const isDone = localStorage.getItem(completeKey) === '1';
   const btn = document.getElementById('complete-btn');
-  btn.textContent = isDone ? '✓ Lesson Marked Complete' : 'Mark Today\'s Lesson Complete';
+  btn.textContent = isDone ? '✓ Lesson Marked Complete' : (isToday ? "Mark Today's Lesson Complete" : 'Mark This Lesson Complete');
   btn.className = 'complete-btn' + (isDone ? ' done' : '');
   btn._noteKey = noteKey;
   btn._completeKey = completeKey;
+
+  document.querySelector('.actions-row h3').textContent =
+    isToday ? "Today's Notes & Status" : `Notes & Status — ${formatDateShort(viewedDate)}`;
 }
 
 function buildCard(lesson, label, type) {
   const card = document.createElement('div');
-  card.className = 'lesson-card' + (type === 'today' ? ' today' : '');
+  card.className = 'lesson-card' + (type === 'today' || type === 'selected' ? ' ' + type : '');
 
   if (!lesson) {
     card.innerHTML = `<div class="card-label">${label}</div><div style="color:#aaa;font-size:13px;margin-top:16px;">No class</div>`;
