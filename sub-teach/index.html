@@ -239,18 +239,36 @@
       transition: all 0.15s;
     }
     .today-bar button:hover { background: var(--purple); color: var(--white); }
-    .lesson-card.selected {
+    .lesson-card.next-up {
       border: 2px solid var(--gold);
       box-shadow: 0 4px 20px rgba(253,185,36,0.2);
     }
-    .lesson-card.selected::before {
-      content: 'VIEWING';
+    .lesson-card.next-up::before {
+      content: 'NEXT CLASS';
       position: absolute;
       top: -10px;
       left: 50%;
       transform: translateX(-50%);
       background: var(--gold);
       color: var(--purple);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+    .lesson-card.selected {
+      border: 2px solid var(--charcoal);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .lesson-card.selected::before {
+      content: 'LAST CLASS';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--charcoal);
+      color: var(--white);
       font-size: 10px;
       font-weight: 800;
       letter-spacing: 1.5px;
@@ -1162,6 +1180,16 @@ function initApp() {
 function resetToToday(classId) {
   const dates = getDatesForClass(classId);
   const today = toKey(new Date());
+
+  // If today is a class day for this class, go there
+  const todayIdx = dates.indexOf(today);
+  if (todayIdx >= 0) { viewedIdx = todayIdx; return; }
+
+  // Otherwise jump to the next upcoming class day
+  const nextIdx = dates.findIndex(d => d > today);
+  if (nextIdx >= 0) { viewedIdx = nextIdx; return; }
+
+  // No upcoming classes — fall back to most recent past
   viewedIdx = 0;
   for (let i = 0; i < dates.length; i++) {
     if (dates[i] <= today) viewedIdx = i;
@@ -1235,6 +1263,10 @@ function renderDashboard() {
   todayBar.style.display = (viewedDate !== today) ? 'flex' : 'none';
 
   const isToday = viewedDate === today;
+  const isFuture = viewedDate > today;
+  const centerLabel = isToday ? "Today's Lesson" : isFuture ? 'Next Class' : 'Last Class';
+  const centerType  = isToday ? 'today' : isFuture ? 'next-up' : 'selected';
+
   const prevLesson = prevDate ? getLessonForClass(classId, prevDate) : null;
   const viewedLesson = getLessonForClass(classId, viewedDate);
   const nextLesson = nextDate ? getLessonForClass(classId, nextDate) : null;
@@ -1242,7 +1274,7 @@ function renderDashboard() {
   const grid = document.getElementById('lesson-grid');
   grid.innerHTML = '';
   grid.appendChild(buildCard(prevLesson, 'Previous', 'prev'));
-  grid.appendChild(buildCard(viewedLesson, isToday ? "Today's Lesson" : 'Selected', isToday ? 'today' : 'selected'));
+  grid.appendChild(buildCard(viewedLesson, centerLabel, centerType));
   grid.appendChild(buildCard(nextLesson, 'Next Lesson', 'next'));
 
   // Notes and complete status
@@ -1262,7 +1294,7 @@ function renderDashboard() {
 
 function buildCard(lesson, label, type) {
   const card = document.createElement('div');
-  card.className = 'lesson-card' + (type === 'today' || type === 'selected' ? ' ' + type : '');
+  card.className = 'lesson-card' + (['today','selected','next-up'].includes(type) ? ' ' + type : '');
 
   if (!lesson) {
     card.innerHTML = `<div class="card-label">${label}</div><div style="color:#aaa;font-size:13px;margin-top:16px;">No class</div>`;
