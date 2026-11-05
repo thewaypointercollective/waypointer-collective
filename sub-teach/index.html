@@ -97,9 +97,108 @@
       margin-top: 10px;
       display: none;
     }
+    .gate-access-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .gate-btn-student {
+      background: var(--gold) !important;
+      color: var(--purple) !important;
+    }
+    .gate-btn-student:hover { background: var(--gold-dark) !important; }
+    .gate-btn-teacher {
+      background: transparent !important;
+      color: var(--purple) !important;
+      border: 2px solid var(--purple) !important;
+    }
+    .gate-btn-teacher:hover { background: var(--purple) !important; color: var(--white) !important; }
+    .gate-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 4px 0;
+      color: var(--charcoal);
+      font-size: 12px;
+      opacity: 0.5;
+    }
+    .gate-divider::before, .gate-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--light-gray);
+    }
+    .gate-back {
+      background: none !important;
+      border: none !important;
+      color: var(--charcoal) !important;
+      font-size: 13px !important;
+      width: auto !important;
+      padding: 6px 0 !important;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+    .gate-back:hover { opacity: 1 !important; background: none !important; }
 
     /* ── APP SHELL ── */
     #app { display: none; }
+    #student-app { display: none; }
+
+    /* ── STUDENT VIEW ── */
+    .student-view { padding: 24px; max-width: 1100px; margin: 0 auto; }
+    .student-banner {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .student-banner-left h2 { font-size: 20px; color: var(--purple); font-weight: 700; }
+    .student-banner-left p { font-size: 13px; color: var(--charcoal); margin-top: 2px; }
+    .student-class-select {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .student-class-select label { font-size: 13px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+    .student-class-select select { flex: 1; padding: 10px 14px; border: 2px solid var(--light-gray); border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--charcoal); outline: none; cursor: pointer; transition: border-color 0.2s; }
+    .student-class-select select:focus { border-color: var(--purple); }
+    .student-grid-wrap {
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 4px;
+    }
+    .student-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(200px, 1fr));
+      gap: 14px;
+      min-width: 600px;
+    }
+    .student-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      position: relative;
+      opacity: 0.75;
+      transition: opacity 0.2s;
+    }
+    .student-card.center { opacity: 1; }
+    .student-card.past-2 { opacity: 0.55; }
+    .student-hint { text-align: center; font-size: 11px; color: var(--charcoal); opacity: 0.5; margin-top: 6px; }
+    @media (max-width: 680px) {
+      .student-grid { grid-template-columns: repeat(5, 220px); }
+    }
 
     header {
       background: var(--purple);
@@ -661,9 +760,17 @@
     <div class="gate-logo">TRA</div>
     <h1>Sub-Teach Portal</h1>
     <p>The Rock Academy — Benjamin Gilmore</p>
-    <input type="password" id="pw-input" placeholder="Enter password" />
-    <button onclick="checkPw()">Enter</button>
-    <div class="gate-error" id="pw-error">Incorrect password. Try again.</div>
+    <div class="gate-access-buttons" id="gate-access-buttons">
+      <button class="gate-btn-student" onclick="enterStudent()">Student Access</button>
+      <div class="gate-divider">or</div>
+      <button class="gate-btn-teacher" onclick="showTeacherLogin()">Teacher Access</button>
+    </div>
+    <div id="gate-teacher-login" style="display:none">
+      <input type="password" id="pw-input" placeholder="Enter password" />
+      <button onclick="checkPw()">Enter</button>
+      <div class="gate-error" id="pw-error">Incorrect password. Try again.</div>
+      <button class="gate-back" onclick="showAccessButtons()">← Back</button>
+    </div>
   </div>
 </div>
 
@@ -744,6 +851,39 @@
       <div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div> Exam/Finals</div>
       <div class="legend-item"><div class="legend-dot" style="background:#27ae60"></div> Camp</div>
     </div>
+  </div>
+</div>
+
+<!-- STUDENT APP -->
+<div id="student-app">
+  <header>
+    <div class="header-brand">
+      <div class="header-logo">TRA</div>
+      <span class="header-title">Sub-Teach &nbsp;|&nbsp; <span>Student View</span></span>
+    </div>
+  </header>
+  <div class="student-view">
+    <div class="student-banner">
+      <div class="student-banner-left">
+        <h2 id="student-banner-date">—</h2>
+        <p id="student-banner-sub">—</p>
+      </div>
+      <div class="day-badge" id="student-day-badge">—</div>
+    </div>
+    <div class="student-class-select">
+      <label>My Class</label>
+      <select id="student-class-select" onchange="renderStudentView()">
+        <option value="precalc-p1">Pre-Calculus — Period 1</option>
+        <option value="precalc-p4">Pre-Calculus — Period 4</option>
+        <option value="apcalc-p3">AP Calculus — Period 3</option>
+        <option value="geometry-p5">Geometry — Period 5</option>
+        <option value="geometry-p6">Geometry — Period 6</option>
+      </select>
+    </div>
+    <div class="student-grid-wrap">
+      <div class="student-grid" id="student-grid"></div>
+    </div>
+    <div class="student-hint">← Scroll to see past and upcoming lessons →</div>
   </div>
 </div>
 
@@ -1158,6 +1298,22 @@ function formatDateShort(dateStr) {
 }
 
 // ── PASSWORD GATE ──────────────────────────────────────────────────────────
+function showTeacherLogin() {
+  document.getElementById('gate-access-buttons').style.display = 'none';
+  document.getElementById('gate-teacher-login').style.display = 'block';
+  document.getElementById('pw-input').focus();
+}
+function showAccessButtons() {
+  document.getElementById('gate-teacher-login').style.display = 'none';
+  document.getElementById('gate-access-buttons').style.display = 'flex';
+  document.getElementById('pw-error').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+}
+function enterStudent() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('student-app').style.display = 'block';
+  initStudentApp();
+}
 function checkPw() {
   const val = document.getElementById('pw-input').value;
   if (val === 'sdrock') {
@@ -1173,6 +1329,95 @@ function checkPw() {
 document.getElementById('pw-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') checkPw();
 });
+
+// ── STUDENT APP ────────────────────────────────────────────────────────────
+function initStudentApp() {
+  renderStudentView();
+}
+
+function renderStudentView() {
+  const classId = document.getElementById('student-class-select').value;
+  const dates = getDatesForClass(classId);
+  const today = toKey(new Date());
+
+  // Find center index: today if class meets, else next upcoming, else last past
+  let centerIdx = dates.findIndex(d => d >= today);
+  if (centerIdx < 0) centerIdx = dates.length - 1;
+
+  // Update banner
+  const centerDate = dates[centerIdx];
+  const data = SCHEDULE[centerDate];
+  const [y, m, d] = centerDate.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  document.getElementById('student-banner-date').textContent =
+    dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+  const badge = document.getElementById('student-day-badge');
+  const isToday = centerDate === today;
+  if (data && data.type === 'ODD') {
+    badge.textContent = isToday ? 'ODD DAY — TODAY' : 'NEXT CLASS';
+    badge.className = 'day-badge odd';
+  } else if (data && data.type === 'EVEN') {
+    badge.textContent = isToday ? 'EVEN DAY — TODAY' : 'NEXT CLASS';
+    badge.className = 'day-badge even';
+  } else {
+    badge.textContent = 'UPCOMING';
+    badge.className = 'day-badge no-school';
+  }
+  document.getElementById('student-banner-sub').textContent =
+    isToday ? 'Showing today and surrounding lessons' : 'Your class doesn\'t meet today — showing next class';
+
+  // Build 5 cards: centerIdx-2, -1, 0, +1, +2
+  const grid = document.getElementById('student-grid');
+  grid.innerHTML = '';
+
+  const slots = [-2, -1, 0, 1, 2];
+  const labels = ['2 Classes Ago', 'Last Class', isToday ? "Today's Lesson" : 'Next Class', 'Next Class', 'Coming Up'];
+  const adjustedLabels = isToday ? labels : ['2 Classes Ago', 'Last Class', 'Next Class', 'After That', 'Coming Up'];
+
+  slots.forEach((offset, i) => {
+    const idx = centerIdx + offset;
+    const dateStr = (idx >= 0 && idx < dates.length) ? dates[idx] : null;
+    const lesson = dateStr ? getLessonForClass(classId, dateStr) : null;
+    const card = buildStudentCard(lesson, adjustedLabels[i], offset);
+    grid.appendChild(card);
+  });
+
+  // Scroll center card into view on mobile
+  setTimeout(() => {
+    const cards = grid.querySelectorAll('.student-card');
+    if (cards[2]) cards[2].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }, 50);
+}
+
+function buildStudentCard(lesson, label, offset) {
+  const card = document.createElement('div');
+  const isCenter = offset === 0;
+  const isPast2 = offset === -2;
+  card.className = 'student-card' + (isCenter ? ' center' : '') + (isPast2 ? ' past-2' : '');
+
+  if (!lesson) {
+    card.innerHTML = `<div class="card-label">${label}</div><div style="color:#aaa;font-size:13px;margin-top:16px;">No class</div>`;
+    return card;
+  }
+
+  if (isCenter) {
+    card.style.border = '2px solid var(--purple)';
+    card.style.boxShadow = '0 4px 20px rgba(84,45,128,0.15)';
+  }
+
+  const quizTag = lesson.quiz ? `<div class="card-quiz">⚠ QUIZ / TEST</div>` : '';
+  card.innerHTML = `
+    <div class="card-label">${label}</div>
+    <div class="card-date">${formatDateShort(lesson.date)}</div>
+    ${quizTag}
+    <div class="card-lesson-num">Lesson ${lesson.lessonNum}</div>
+    <div class="card-title">${lesson.title}</div>
+    <div class="card-topics">${lesson.topics}</div>
+    <div class="card-hw"><strong>Homework</strong>${lesson.hw || 'No homework assigned'}</div>
+  `;
+  return card;
+}
 
 // ── APP INIT ───────────────────────────────────────────────────────────────
 let viewedClassId = null;
