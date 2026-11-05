@@ -989,7 +989,7 @@ const dataPromise = loadData();
 
 // ── CLASSES ────────────────────────────────────────────────────────────────
 const CLASSES = {
-  'precalc-p4': { name: 'Pre-Calculus', period: 4, dayType: 'EVEN' },
+  'precalc-p4': { name: 'Pre-Calculus', period: 4, dayType: 'EVEN', lessonOffset: 4 },
   'geometry-p6': { name: 'Geometry', period: 6, dayType: 'EVEN' },
   'precalc-p1': { name: 'Pre-Calculus', period: 1, dayType: 'ODD' },
   'apcalc-p3': { name: 'AP Calculus', period: 3, dayType: 'ODD' },
@@ -1023,8 +1023,9 @@ function getLessonForClass(classId, dateStr) {
   if (idx < 0) return null;
   const cls = CLASSES[classId];
   const content = LOREM_LESSONS[classId] || LOREM_LESSONS[cls.name] || [];
-  const lesson = content[idx % content.length];
-  return { ...lesson, lessonNum: idx + 1, date: dateStr };
+  const offset = cls.lessonOffset || 0;
+  const lesson = content[idx + offset];
+  return { ...lesson, lessonNum: idx + offset + 1, date: dateStr };
 }
 
 function getNearestClassDate(classId) {
