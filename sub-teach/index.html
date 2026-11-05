@@ -898,200 +898,94 @@
 </div>
 
 <script>
-// ── CALENDAR DATA ──────────────────────────────────────────────────────────
-// type: 'ODD' | 'EVEN' | 'NO_SCHOOL' | 'EXAM' | 'CAMP' | 'HALF_DAY' | 'PD_DAY'
-const SCHEDULE = {
-  // OCTOBER 2026
-  '2026-10-05': { type: 'ODD' },
-  '2026-10-06': { type: 'ODD', note: 'Special Schedule' },
-  '2026-10-07': { type: 'EVEN' },
-  '2026-10-08': { type: 'ODD', note: 'End Q1' },
-  '2026-10-09': { type: 'EVEN' },
-  // Oct 11 = Sunday, Oct 18 = Sunday, Oct 25 = Sunday — no entries needed
-  '2026-10-12': { type: 'NO_SCHOOL', note: 'Holiday' },
-  '2026-10-13': { type: 'ODD' },
-  '2026-10-14': { type: 'EVEN' },
-  '2026-10-15': { type: 'ODD' },
-  '2026-10-16': { type: 'NO_SCHOOL', note: '7-12 Conferences' },
-  '2026-10-19': { type: 'EVEN' },
-  '2026-10-20': { type: 'ODD' },
-  '2026-10-21': { type: 'EVEN' },
-  '2026-10-22': { type: 'ODD' },
-  '2026-10-23': { type: 'NO_SCHOOL', note: 'K-12 Parent Conferences' },
-  '2026-10-26': { type: 'EVEN' },
-  '2026-10-27': { type: 'ODD' },
-  '2026-10-28': { type: 'EVEN' },
-  '2026-10-29': { type: 'ODD' },
-  '2026-10-30': { type: 'NO_SCHOOL', note: 'K-12 Parent Conferences' },
-  // NOVEMBER 2026
-  // Nov 1 = Sunday — no entry
-  '2026-11-02': { type: 'ODD' },
-  '2026-11-03': { type: 'EVEN' },
-  '2026-11-04': { type: 'ODD' },
-  '2026-11-05': { type: 'EVEN' },
-  '2026-11-06': { type: 'ODD' },
-  // Nov 7-8 = weekend; Nov 8 = Sunday — no entries
-  '2026-11-09': { type: 'EVEN' },
-  '2026-11-10': { type: 'ODD' },
-  '2026-11-11': { type: 'NO_SCHOOL', note: "Veteran's Day" },
-  '2026-11-12': { type: 'EVEN' },
-  '2026-11-13': { type: 'ODD' },
-  // Nov 14-15 = weekend — no entries
-  '2026-11-16': { type: 'EVEN' },
-  '2026-11-17': { type: 'ODD' },
-  '2026-11-18': { type: 'EVEN' },
-  '2026-11-19': { type: 'ODD' },
-  '2026-11-20': { type: 'HALF_DAY', note: 'K-12 Half Day — Even' },
-  // Nov 21-22 = weekend; Thanksgiving Break Mon-Fri
-  '2026-11-23': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
-  '2026-11-24': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
-  '2026-11-25': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
-  '2026-11-26': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
-  '2026-11-27': { type: 'NO_SCHOOL', note: 'Thanksgiving Break' },
-  // Nov 29 = Sunday — no entry
-  '2026-11-30': { type: 'ODD' },
-  // DECEMBER 2026
-  '2026-12-01': { type: 'ODD' },
-  '2026-12-02': { type: 'EVEN' },
-  '2026-12-03': { type: 'ODD' },
-  // Dec 6 = Sunday — no entry
-  '2026-12-07': { type: 'ODD' },
-  '2026-12-08': { type: 'EVEN' },
-  '2026-12-09': { type: 'ODD' },
-  '2026-12-10': { type: 'EVEN' },
-  // Dec 13 = Sunday
-  '2026-12-14': { type: 'HALF_DAY', note: '7-12 Finals' },
-  '2026-12-15': { type: 'HALF_DAY', note: '7-12 Finals' },
-  '2026-12-16': { type: 'HALF_DAY', note: '7-12 Finals' },
-  '2026-12-17': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  '2026-12-18': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  // Dec 19-20 = weekend — no entries needed
-  '2026-12-21': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  '2026-12-22': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  '2026-12-23': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  '2026-12-24': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  '2026-12-25': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  // Dec 27 = Sunday — no entry needed
-  '2026-12-28': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  '2026-12-29': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  '2026-12-30': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  '2026-12-31': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  // JANUARY 2027
-  '2027-01-01': { type: 'NO_SCHOOL', note: 'Christmas Break' },
-  // Jan 2 = Sat, Jan 3 = Sun — no entries needed
+// ── SHEET DATA SOURCES ────────────────────────────────────────────────────
+const PUBLISHED_ID = '2PACX-1vT2INB0sO_KidZP3UzOeaPuaaxPirmXbadBg8rtQjTigBJuyWNB91P7eenTAYEaCZ-2LdGUnI4qk51c';
+const SCHEDULE_URL = 'https://docs.google.com/spreadsheets/d/e/' + PUBLISHED_ID + '/pub?gid=0&single=true&output=csv';
+const LESSONS_URL  = 'https://docs.google.com/spreadsheets/d/e/' + PUBLISHED_ID + '/pub?gid=1371788267&single=true&output=csv';
+const CACHE_KEY    = 'subteach_data_v2';
+const CACHE_TTL    = 60 * 60 * 1000; // 1 hour
 
-  '2027-01-04': { type: 'PD_DAY', note: 'PD Day – No Students' },
-  '2027-01-05': { type: 'ODD', note: 'First Day Semester 2' },
-  '2027-01-06': { type: 'EVEN' },
-  '2027-01-07': { type: 'ODD' },
-  '2027-01-08': { type: 'EVEN' },
-  // Jan 9 = Saturday — no entry
-  '2027-01-11': { type: 'EVEN' },
-  '2027-01-12': { type: 'ODD' },
-  '2027-01-13': { type: 'EVEN' },
-  '2027-01-14': { type: 'ODD' },
-  '2027-01-15': { type: 'EVEN' },
-  // Jan 17 = Sunday
-  '2027-01-18': { type: 'NO_SCHOOL', note: 'MLK Day' },
-  '2027-01-19': { type: 'ODD' },
-  '2027-01-20': { type: 'EVEN' },
-  '2027-01-21': { type: 'ODD' },
-  '2027-01-22': { type: 'EVEN' },
-  '2027-01-25': { type: 'ODD' },
-  '2027-01-26': { type: 'CAMP', note: '7-12 Camp' },
-  '2027-01-27': { type: 'CAMP', note: '7-12 Camp' },
-  '2027-01-28': { type: 'CAMP', note: '7-12 Camp' },
-  '2027-01-29': { type: 'NO_SCHOOL', note: '7-12 No School' },
-  // FEBRUARY 2027
-  '2027-02-01': { type: 'ODD' },
-  '2027-02-02': { type: 'EVEN' },
-  '2027-02-03': { type: 'ODD' },
-  '2027-02-04': { type: 'EVEN' },
-  '2027-02-05': { type: 'ODD' },
-  '2027-02-08': { type: 'EVEN' },
-  '2027-02-09': { type: 'ODD' },
-  '2027-02-10': { type: 'EVEN' },
-  '2027-02-11': { type: 'ODD' },
-  '2027-02-12': { type: 'HALF_DAY', note: 'K-12 Half Day' },
-  // Feb 13 = Saturday, Feb 14 = Sunday; Winter Break Mon-Fri Feb 15-19
-  '2027-02-15': { type: 'NO_SCHOOL', note: 'Winter Break' },
-  '2027-02-16': { type: 'NO_SCHOOL', note: 'Winter Break' },
-  '2027-02-17': { type: 'NO_SCHOOL', note: 'Winter Break' },
-  '2027-02-18': { type: 'NO_SCHOOL', note: 'Winter Break' },
-  '2027-02-19': { type: 'NO_SCHOOL', note: 'Winter Break' },
-  // Feb 20-21 = weekend; school resumes Feb 22
-  '2027-02-22': { type: 'EVEN' },
-  '2027-02-23': { type: 'ODD' },
-  '2027-02-24': { type: 'EVEN' },
-  '2027-02-25': { type: 'ODD' },
-  '2027-02-26': { type: 'EVEN' },
-  // MARCH 2027
-  '2027-03-01': { type: 'ODD' },
-  '2027-03-02': { type: 'EVEN' },
-  '2027-03-03': { type: 'ODD' },
-  '2027-03-04': { type: 'EVEN' },
-  '2027-03-05': { type: 'ODD' },
-  '2027-03-08': { type: 'EVEN' },
-  '2027-03-09': { type: 'ODD' },
-  '2027-03-10': { type: 'EVEN' },
-  '2027-03-11': { type: 'ODD', note: 'End Q3' },
-  '2027-03-12': { type: 'EVEN' },
-  // Mar 13 = Saturday — no entry
-  '2027-03-15': { type: 'EVEN' },
-  '2027-03-16': { type: 'ODD' },
-  '2027-03-17': { type: 'EVEN' },
-  '2027-03-18': { type: 'ODD' },
-  '2027-03-19': { type: 'EVEN' },
-  // Mar 20 = Saturday — no entry
-  // Mar 21 = Sunday; Easter Break Mar 22-29
-  '2027-03-22': { type: 'NO_SCHOOL', note: 'Easter Break' },
-  '2027-03-23': { type: 'NO_SCHOOL', note: 'Easter Break' },
-  '2027-03-24': { type: 'NO_SCHOOL', note: 'Easter Break' },
-  '2027-03-25': { type: 'NO_SCHOOL', note: 'Easter Break' },
-  '2027-03-26': { type: 'NO_SCHOOL', note: 'Easter Break' },
-  '2027-03-29': { type: 'NO_SCHOOL', note: 'Easter Break' },
-  '2027-03-30': { type: 'EVEN' },
-  '2027-03-31': { type: 'ODD' },
-  // APRIL 2027
-  '2027-04-01': { type: 'EVEN' },
-  // Apr 4 = Sunday — no entry
-  '2027-04-05': { type: 'ODD' },
-  '2027-04-06': { type: 'EVEN' },
-  '2027-04-07': { type: 'ODD' },
-  '2027-04-08': { type: 'EVEN' },
-  // Apr 11 = Sunday — no entry
-  '2027-04-12': { type: 'EVEN' },
-  '2027-04-13': { type: 'ODD' },
-  '2027-04-14': { type: 'EVEN' },
-  '2027-04-15': { type: 'ODD' },
-  // Apr 18 = Sunday — no entry
-  '2027-04-19': { type: 'ODD' },
-  '2027-04-20': { type: 'EVEN' },
-  '2027-04-21': { type: 'ODD' },
-  '2027-04-22': { type: 'EVEN' },
-  '2027-04-23': { type: 'NO_SCHOOL', note: 'In-Service' },
-  // Apr 25 = Sunday — no entry
-  '2027-04-26': { type: 'EVEN' },
-  '2027-04-27': { type: 'ODD' },
-  '2027-04-28': { type: 'EVEN' },
-  '2027-04-29': { type: 'ODD' },
-  // MAY 2027
-  // May 1 = Saturday, May 2 = Sunday — no entries
-  '2027-05-03': { type: 'EVEN', note: 'AP Exams begin' },
-  '2027-05-04': { type: 'ODD', note: 'AP Exams' },
-  '2027-05-05': { type: 'EVEN', note: 'AP Exams' },
-  '2027-05-06': { type: 'ODD', note: 'AP Exams' },
-  // May 9 = Sunday — no entry
-  '2027-05-10': { type: 'ODD' },
-  '2027-05-11': { type: 'EVEN' },
-  '2027-05-12': { type: 'ODD' },
-  '2027-05-13': { type: 'EVEN' },
-  // May 16 = Sunday
-  '2027-05-17': { type: 'HALF_DAY', note: 'Finals – K-12 Half Day' },
-  '2027-05-18': { type: 'HALF_DAY', note: 'Finals – K-12 Half Day' },
-  '2027-05-19': { type: 'HALF_DAY', note: 'Finals – K-12 Half Day' },
-  '2027-05-20': { type: 'NO_SCHOOL', note: 'Graduation / Promotion' },
-};
+let SCHEDULE = {};
+let LOREM_LESSONS = {};
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g,'').trim());
+  return lines.slice(1).map(line => {
+    const fields = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { fields.push(cur); cur = ''; }
+      else cur += ch;
+    }
+    fields.push(cur);
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = (fields[i] || '').replace(/^"|"$/g,'').trim(); });
+    return obj;
+  }).filter(r => Object.values(r).some(v => v));
+}
+
+function buildSchedule(rows) {
+  const s = {};
+  rows.forEach(r => {
+    if (!r.date || !r.type) return;
+    s[r.date] = { type: r.type };
+    if (r.note) s[r.date].note = r.note;
+  });
+  return s;
+}
+
+function buildLessons(rows) {
+  const l = {};
+  rows.forEach(r => {
+    if (!r.classId || !r.lessonNum) return;
+    if (!l[r.classId]) l[r.classId] = [];
+    l[r.classId][parseInt(r.lessonNum) - 1] = {
+      title: r.title || '',
+      topics: r.topics || '',
+      hw: r.homework || '',
+      quiz: r.isQuiz === 'TRUE'
+    };
+  });
+  return l;
+}
+
+async function loadData() {
+  try {
+    const [sRes, lRes] = await Promise.all([fetch(SCHEDULE_URL), fetch(LESSONS_URL)]);
+    if (!sRes.ok || !lRes.ok) throw new Error('fetch failed');
+    const [sText, lText] = await Promise.all([sRes.text(), lRes.text()]);
+    SCHEDULE = buildSchedule(parseCSV(sText));
+    LOREM_LESSONS = buildLessons(parseCSV(lText));
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), schedule: SCHEDULE, lessons: LOREM_LESSONS }));
+    return 'fresh';
+  } catch(e) {
+    try {
+      const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+      if (c) { SCHEDULE = c.schedule; LOREM_LESSONS = c.lessons; return 'cached'; }
+    } catch(e2) {}
+    return 'error';
+  }
+}
+
+function showDataBanner(status) {
+  if (status === 'fresh') return;
+  const bar = document.createElement('div');
+  bar.style.cssText = 'text-align:center;padding:7px 16px;font-size:12px;font-weight:600;letter-spacing:0.3px;';
+  if (status === 'cached') {
+    bar.style.background = '#f39c12'; bar.style.color = '#fff';
+    bar.textContent = '📶 Offline — showing cached data. Connect to internet to get latest updates.';
+  } else {
+    bar.style.background = '#e74c3c'; bar.style.color = '#fff';
+    bar.textContent = '⚠ Could not load data and no cache found. Please connect to the internet and refresh.';
+  }
+  document.querySelector('header').insertAdjacentElement('afterend', bar);
+}
+
+// Start fetching immediately (before user authenticates)
+const dataPromise = loadData();
 
 // ── CLASSES ────────────────────────────────────────────────────────────────
 const CLASSES = {
@@ -1102,144 +996,6 @@ const CLASSES = {
   'geometry-p5': { name: 'Geometry', period: 5, dayType: 'ODD' },
 };
 
-// ── LOREM IPSUM CONTENT ────────────────────────────────────────────────────
-// Ch. 3 lesson plan — shared content, indexed per class below
-// Geometry Ch. 3 — 8 days
-const CH3_GEO = [
-  { title: 'Geo Ch. 3, Day 1 — Sections 3-1 & 3-2', topics: 'Warm-up p. 141 #1–8 · Section 3-1 Notes; CW p. 144 #1–11 · Section 3-2 Notes; CW p. 152 #1–6', hw: 'p. 145–146 #12–34 even, 42, 44; p. 152 #7–23 all · Study — Quiz next class' },
-  { title: 'Geo Ch. 3, Day 2 — Quiz 3-1 & 3-2', topics: 'Warm-up p. 154 #35–39, p. 164 #1–12 · Quiz: Sections 3-1 and 3-2', hw: 'p. 163 #52–76 even (63 = 5 steps)', quiz: true },
-  { title: 'Geo Ch. 3, Day 3 — Section 3-3', topics: 'Warm-up p. 154 #40–46 · Section 3-3 Notes', hw: 'p. 160–161 #10–40 even · Study — Quiz next class' },
-  { title: 'Geo Ch. 3, Day 4 — Quiz 3-3 & Section 3-4', topics: 'Review on board · Quiz: Section 3-3 · Section 3-4 Notes', hw: 'p. 169 #14–32 even', quiz: true },
-  { title: 'Geo Ch. 3, Day 5 — Section 3-5', topics: 'Warm-up p. 170 #38, 40, 42, 55–57 · Section 3-5 Notes; CW p. 175 #1–5 · Sudoku Puzzles', hw: 'p. 169 #13–31 odd; p. 176–177 #8–20 even, 23 (3 steps), 24 (4 steps) · Study — Quiz next class' },
-  { title: 'Geo Ch. 3, Day 6 — Quiz 3-4 & 3-5; Begin Review', topics: 'Warm-up p. 179 #39–48 · Quiz: Sections 3-4 and 3-5 · Begin Review', hw: 'p. 191 #1–8; p. 192–194 #10–24 even, 25; p. 195 #17–23', quiz: true },
-  { title: 'Geo Ch. 3, Day 7 — Section 3-6 & Review', topics: 'Section 3-6 · Work on Review p. 191 #1–8; p. 192–194 #10–24 even, 25; p. 195 #17–23 all', hw: 'p. 185–186 #6–18 even · Finish/Correct Review · Organize packet · Study — Test next class' },
-  { title: 'Geo Ch. 3, Day 8 — Chapter 3 Test', topics: 'Turn in Chapter 3 Packet · Chapter 3 Test · October Problem', hw: 'No homework', quiz: true },
-];
-
-// AP Calculus Ch. 4 — 11 days
-const CH4_APCALC = [
-  { title: 'AP Calc Ch. 4, Day 1 — Section 4-1', topics: 'Section 4-1 Notes', hw: 'p. 193–194 #3–30 every 3rd' },
-  { title: 'AP Calc Ch. 4, Day 2 — Sections 4-1 cont. & 4-2', topics: 'Warm-up p. 194–195 #47–50 · Section 4-1 cont. and 4-2 Notes', hw: 'p. 194 #36–42 even; p. 202 #3–39 every 3rd' },
-  { title: 'AP Calc Ch. 4, Day 3 — Section 4-3', topics: 'Section 4-3 Notes', hw: 'p. 215–217 #3–36 every 3rd, 4, 8, 20, 24, 26, 30, 31, 34, 39–41, 47–48, 50 · Study — Quiz next class' },
-  { title: 'AP Calc Ch. 4, Day 4 — Quiz 4-1 to 4-3', topics: 'Quiz: Sections 4-1 to 4-3', hw: 'p. 218 #55–60, #1–4 all', quiz: true },
-  { title: 'AP Calc Ch. 4, Day 5 — Section 4-4', topics: 'Warm-up p. 226 Quick Review #1–4, 9 · Section 4-4 Notes', hw: 'p. 226–228 #1–10, 13, 14, 18, 23–26 all' },
-  { title: 'AP Calc Ch. 4, Day 6 — Section 4-5', topics: 'Warm-up QR p. 242 #1–5 · Section 4-5 Notes', hw: 'p. 242–243 #2–30 even' },
-  { title: 'AP Calc Ch. 4, Day 7 — Section 4-5 cont.', topics: 'Section 4-5 Notes continued', hw: 'p. 243–244 #31–34 all, 36–54 every 3rd, 42' },
-  { title: 'AP Calc Ch. 4, Day 8 — Section 4-6', topics: 'Section 4-6 Notes', hw: 'p. 251–254 #2–10 even, 14–18 even, 22, 24, 25, 28, 33, 36–41 all · Study — Quiz next class' },
-  { title: 'AP Calc Ch. 4, Day 9 — Quiz 4-4 to 4-6', topics: 'Quiz: Sections 4-4 to 4-6', hw: 'p. 256–259 #1, 4, 6, 9, 17, 20, 23, 25, 27, 32, 33, 35, 37–40, 42, 43, 45, 49, 54, 58–60, 62, 66', quiz: true },
-  { title: 'AP Calc Ch. 4, Day 10 — Review', topics: 'Review day · Organize packet · Study — Test tomorrow', hw: 'Review Handout; Organize Packet; Study — Test next class' },
-  { title: 'AP Calc Ch. 4, Day 11 — Chapter 4 Test', topics: 'Turn in Chapter 4 Packet · Chapter 4 Test', hw: 'November DBQ', quiz: true },
-];
-
-// Pre-Calculus Ch. 3 — 11 days
-const CH3 = [
-  { title: 'Ch. 3, Day 1 — Sections 3-1 & 3-2', topics: 'Section 3-1 Notes; CW p. 134 #6–12 · Section 3-2 Notes; CW p. 143 #13, 15, 17, 21', hw: 'p. 134–135 #14–26 even, 28–30, 32, 38; p. 143–144 #14–24 even, 42' },
-  { title: 'Ch. 3, Day 2 — Section 3-3', topics: 'Warm-up p. 136 #44–50 · Section 3-3 Notes; CW p. 150 #13, 15, 23', hw: 'p. 150 #14–34 even · Study — Quiz next class' },
-  { title: 'Ch. 3, Day 3 — Quiz 3-1 & 3-2', topics: 'Warm-up p. 151 Mid-Chap. Quiz #1–6 · Quiz: Sections 3-1 and 3-2', hw: 'Mid-Chapter Test #1–7', quiz: true },
-  { title: 'Ch. 3, Day 4 — Section 3-4', topics: 'Warm-up p. 151 #46–53 · Mad Minute · Section 3-4 Notes · 24-game', hw: 'p. 156–157 #16–34 even, 42 · Study — Quiz next class' },
-  { title: 'Ch. 3, Day 5 — Section 3-5 & Quiz 3-3/3-4', topics: 'Section 3-5 Notes; CW p. 165 #5–6 · Quiz: Sections 3-3 and 3-4', hw: 'p. 166 #12–19 all', quiz: true },
-  { title: 'Ch. 3, Day 6 — Section 3-5 cont.', topics: 'Warm-up p. 158 #51–56 · Section 3-5 Notes continued', hw: 'p. 166–167 #20–31 all' },
-  { title: 'Ch. 3, Day 7 — Section 3-6', topics: 'Section 3-6 Notes; CW p. 176 #4–11 all · Review Handout', hw: 'Finish Review Handout; p. 177 #14–28 even · Study — Quiz next class' },
-  { title: 'Ch. 3, Day 8 — Section 3-7 & Quiz 3-5/3-6', topics: 'Section 3-7 Notes; CW p. 185–186 #5–10 all · Quiz: Sections 3-5 and 3-6', hw: 'p. 186–187 #14–32 even', quiz: true },
-  { title: 'Ch. 3, Day 9 — Section 3-8', topics: 'Warm-up p. 188 #48–56 all · Section 3-8 Notes', hw: 'p. 194 #14–26 even' },
-  { title: 'Ch. 3, Day 10 — Review', topics: 'Work on review packet · Organize packet · Study — Test next class', hw: 'Review p. 197 #1–10 all; p. 198–200 #12–58 even · Organize Packet' },
-  { title: 'Ch. 3, Day 11 — Chapter 3 Test', topics: 'Turn in Chapter 3 Packet · Chapter 3 Test', hw: 'No homework', quiz: true },
-];
-
-const LOREM_LESSONS = {
-  // Pre-Calculus P1 (ODD): Ch3 starts at index 5 (Oct 20 = ODD day #6)
-  // Indices 0–4 = pre-Ch3; 5–15 = Ch3 Days 1–11
-  'precalc-p1': [
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    ...CH3,
-  ],
-  // Pre-Calculus P4 (EVEN): Ch3 starts at index 6 (Oct 28 = EVEN day #7)
-  // Indices 0–5 = pre-Ch3; 6–16 = Ch3 Days 1–11
-  // Nov 5 (EVEN day #9, index 8) = Ch3 Day 3 — Quiz 3-1 & 3-2
-  'precalc-p4': [
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    ...CH3,
-  ],
-  // AP Calc P3 (ODD): Ch3 ran indices 0–9; Ch4 starts at index 10 (Nov 3)
-  'apcalc-p3': [
-    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
-    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
-    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
-    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
-    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
-    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
-    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
-    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
-    { title: 'Chapter 3 — Prior Lesson', topics: 'Chapter 3 content', hw: 'See Chapter 3 notes' },
-    { title: 'Chapter 3 — Test Day', topics: 'Turn in Chapter 3 Packet · Chapter 3 Test', hw: 'No homework', quiz: true },
-    ...CH4_APCALC,
-  ],
-  // Geometry P5 (ODD): Ch3 starts at index 5 (Oct 20 = ODD day #6)
-  // Indices 0–4 = pre-Ch3; 5–12 = Ch3 Days 1–8
-  'geometry-p5': [
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    ...CH3_GEO,
-  ],
-  // Geometry P6 (EVEN): Ch3 starts at index 2 (Oct 14 = EVEN day #3)
-  // Indices 0–1 = pre-Ch3; 2–9 = Ch3 Days 1–8
-  // Nov 5 (EVEN day #9, index 8) = Ch3 Day 7 — Review
-  // Ch3 Day 8 (Test) = index 9 = Nov 11 (Nov 10 is Veteran's Day)
-  'geometry-p6': [
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    { title: 'Prior Chapter — Review', topics: 'Reviewing prior chapter material', hw: 'See previous lesson notes' },
-    ...CH3_GEO,
-  ],
-  'Geometry': [
-    { title: 'Points, Lines, and Planes', topics: 'Undefined terms, postulates, collinear points, segment bisectors', hw: 'p. 8 #1–20 (identify and name geometric figures)' },
-    { title: 'Angle Pairs', topics: 'Complementary, supplementary, vertical, adjacent angles', hw: 'Worksheet 2 — find missing angles in 12 diagrams' },
-    { title: 'Parallel Lines & Transversals', topics: 'Alternate interior/exterior angles, co-interior angles, proofs', hw: 'p. 34 #5–22 odd (prove angle relationships)', quiz: true },
-    { title: 'Triangle Congruence: SSS & SAS', topics: 'Congruence postulates, corresponding parts, CPCTC', hw: 'p. 52 #1–18 (write two-column congruence proofs)' },
-    { title: 'Triangle Congruence: ASA & AAS', topics: 'Angle-Side postulates, HL theorem for right triangles', hw: 'Worksheet 5 — identify congruence method and write proof' },
-    { title: 'Isosceles & Equilateral Triangles', topics: 'Base angles theorem, vertex angle, properties', hw: 'p. 74 #3–21 odd (find missing measures)', quiz: true },
-    { title: 'Midsegments of Triangles', topics: 'Midsegment theorem, proportional relationships', hw: 'p. 88 #2–16 even (apply midsegment properties)' },
-    { title: 'Quadrilaterals', topics: 'Parallelogram properties, rectangle, rhombus, square', hw: 'Worksheet 8 — classify and find missing values (16 problems)', quiz: true },
-    { title: 'Similarity: AA, SAS, SSS', topics: 'Similar polygons, scale factor, corresponding sides/angles', hw: 'p. 118 #4–22 even (set up and solve proportions)' },
-    { title: 'Right Triangle Trigonometry', topics: 'SOH-CAH-TOA, finding missing sides and angles', hw: 'p. 134 #1–20 (evaluate trig ratios, find unknowns)' },
-    { title: 'Special Right Triangles', topics: '30-60-90 and 45-45-90 triangle shortcuts', hw: 'Worksheet 11 — find all sides (20 triangles)', quiz: true },
-    { title: 'Circles: Arcs and Chords', topics: 'Central angles, arc length, chord properties', hw: 'p. 162 #2–18 even (find arc measures and lengths)' },
-    { title: 'Circles: Tangents and Secants', topics: 'Tangent lines, inscribed angles, secant-tangent angles', hw: 'Worksheet 13 — solve angle relationships in circles (14 problems)' },
-    { title: 'Area of Polygons', topics: 'Triangles, parallelograms, trapezoids, regular polygons', hw: 'p. 188 #1–22 odd (calculate areas)', quiz: true },
-    { title: 'Surface Area and Volume', topics: 'Prisms, pyramids, cylinders, cones, spheres', hw: 'Worksheet 15 — find SA and volume (10 composite solids)' },
-    { title: 'Geometric Probability', topics: 'Area models, length models, probability on a number line', hw: 'p. 212 #4–20 even (geometric probability problems)' },
-    { title: 'Transformations: Translations & Reflections', topics: 'Coordinate rules, image vs. pre-image, symmetry', hw: 'Worksheet 17 — graph and describe transformations', quiz: true },
-    { title: 'Transformations: Rotations & Dilations', topics: 'Rotation rules, center of dilation, scale factor', hw: 'p. 234 #2–18 even (perform and describe transformations)' },
-  ],
-  'AP Calculus': [
-    { title: 'Limits and Continuity Review', topics: 'L\'Hôpital\'s rule, squeeze theorem, types of discontinuity', hw: 'AP Free Response practice — 2011 #1 (show all work)' },
-    { title: 'Differentiation: Chain Rule', topics: 'Composite functions, implicit differentiation application', hw: 'p. 88 #15–35 odd (differentiate using chain rule)' },
-    { title: 'Related Rates', topics: 'Setting up equations, differentiating with respect to time', hw: 'Worksheet 3 — 8 related rates problems (ladder, water tank, shadow)', quiz: true },
-    { title: 'Optimization', topics: 'Critical points, first/second derivative tests, applied max/min', hw: 'AP practice set — 5 optimization problems' },
-    { title: 'Curve Sketching', topics: 'Concavity, inflection points, complete function analysis', hw: 'p. 134 #4–20 even (sketch from derivative information)' },
-    { title: 'Definite Integrals', topics: 'Riemann sums, fundamental theorem, net area', hw: 'Worksheet 6 — evaluate 12 definite integrals', quiz: true },
-    { title: 'Integration Techniques: Substitution', topics: 'u-substitution, choosing u, change of bounds', hw: 'p. 178 #3–25 odd (integrate using substitution)' },
-    { title: 'Integration by Parts', topics: 'LIATE rule, tabular method, repeated applications', hw: 'Worksheet 8 — 10 integration by parts problems' },
-    { title: 'Area Between Curves', topics: 'Intersections, integrating difference of functions', hw: 'p. 204 #2–16 even (set up and evaluate area integrals)', quiz: true },
-    { title: 'Volumes of Revolution: Disk/Washer', topics: 'Rotating around x-axis and y-axis, setting up integrals', hw: 'Worksheet 10 — 8 volume problems (sketch each solid)' },
-    { title: 'Differential Equations', topics: 'Separable equations, slope fields, initial value problems', hw: 'AP practice — slope field and DE packet (12 problems)', quiz: true },
-    { title: 'Sequences and Series: Convergence Tests', topics: 'Geometric, p-series, ratio test, comparison test', hw: 'p. 268 #4–30 even (determine convergence/divergence)' },
-    { title: 'Power Series and Taylor Series', topics: 'Radius of convergence, Taylor/Maclaurin polynomials', hw: 'Worksheet 13 — write Taylor series for 6 functions', quiz: true },
-    { title: 'AP Exam Strategy: FRQ Practice', topics: 'Justification language, graphical analysis, scoring rubric review', hw: 'Complete 2022 AP Calc AB Free Response set (all 6 problems)' },
-    { title: 'AP Exam Strategy: MCQ Practice', topics: 'Calculator vs. non-calculator sections, time management', hw: 'Timed MCQ set — 45 questions in 60 minutes' },
-  ],
-};
 
 // ── UTILITY FUNCTIONS ──────────────────────────────────────────────────────
 function toKey(date) {
@@ -1309,16 +1065,20 @@ function showAccessButtons() {
   document.getElementById('pw-error').style.display = 'none';
   document.getElementById('pw-input').value = '';
 }
-function enterStudent() {
+async function enterStudent() {
   document.getElementById('gate').style.display = 'none';
   document.getElementById('student-app').style.display = 'block';
+  const dataStatus = await dataPromise;
+  showDataBanner(dataStatus);
   initStudentApp();
 }
-function checkPw() {
+async function checkPw() {
   const val = document.getElementById('pw-input').value;
   if (val === 'sdrock') {
     document.getElementById('gate').style.display = 'none';
     document.getElementById('app').style.display = 'block';
+    const dataStatus = await dataPromise;
+    showDataBanner(dataStatus);
     initApp();
   } else {
     document.getElementById('pw-error').style.display = 'block';
